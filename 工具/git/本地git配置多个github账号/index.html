@@ -14,7 +14,7 @@
 <meta property="og:description" content="生成ssh key 1ssh-keygen -t rsa -C “account-1@gmail.com” 假设账号account1生成的密钥保存在~&#x2F;.ssh&#x2F;id_rsa和~&#x2F;.ssh&#x2F;id_rsa.pub 1ssh-keygen -t rsa -C “account-2@gmail.com” 假设账号account2生成的密钥保存在~&#x2F;.ssh&#x2F;id_rsa_another和~&#x2F;.ssh&#x2F;i">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-03-20T06:02:38.000Z">
-<meta property="article:modified_time" content="2023-03-22T10:12:42.865Z">
+<meta property="article:modified_time" content="2023-03-22T11:57:39.110Z">
 <meta property="article:author" content="Rainy2k">
 <meta name="twitter:card" content="summary">
     
@@ -48,11 +48,24 @@
     
 	<!-- mathjax -->
 	
-<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
 </head>
 
-<body class="max-width mx-auto px3 ltr">
-    
+<body class="max-width mx-auto px3 ltr">    
       <div id="header-post">
   <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
@@ -338,5 +351,20 @@
 
 <!-- utterances Comments -->
 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
