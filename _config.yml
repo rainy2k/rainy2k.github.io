@@ -104,8 +104,8 @@ remote-theme: cactus
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  # repository: git@github.com:rainy2k/rainy2k.github.io.git
-  repository: git@rainy2k:rainy2k/rainy2k.github.io.git
+  repository: git@github.com:rainy2k/rainy2k.github.io.git
+  # repository: git@rainy2k:rainy2k/rainy2k.github.io.git
   branch: main
   message: ${{ github.event.head_commit.message }}
   user: rainy2k
