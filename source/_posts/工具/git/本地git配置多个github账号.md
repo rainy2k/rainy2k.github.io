@@ -64,6 +64,7 @@ git remote add origin git@account1:<github usernmae>/<your repository name>.git
 ## 生效ssh密钥
 
 ```shell
+ssh-add ~/.ssh/id_rsa
 ssh-add ~/.ssh/id_rsa_another
 ```
 

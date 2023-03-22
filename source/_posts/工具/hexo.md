@@ -113,22 +113,6 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-npm-cache
 
-      # - name: Configuration environment
-      #   env:
-      #     HEXO_DEPLOY_PRI: ${{secrets.HEXO_DEPLOY_PRI}}
-      #   run: |
-      #     sudo timedatectl set-timezone "Asia/Shanghai"
-      #     mkdir -p ~/.ssh/
-      #     echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-      #     git config --global user.name $GIT_USER
-      #     git config --global user.email $GIT_EMAIL
-
-      # - name: Install Pandoc
-      #   run: |
-      #     curl -s -L https://github.com/jgm/pandoc/releases/download/2.9.2/pandoc-2.9.2-linux-amd64.tar.gz | tar xvzf - -C $RUNNER_TOOL_CACHE/
-
       - name: Install dependencies
         run: |
           sudo apt-get install pandoc
@@ -139,7 +123,6 @@ jobs:
           npm install hexo-generator-archive hexo-generator-category hexo-generator-feed hexo-generator-index hexo-generator-tag --save
           npm install hexo-renderer-ejs hexo-renderer-pandoc hexo-renderer-stylus hexo-server --save 
           node -v
-  
 
       - name: clean & build
         run: |
