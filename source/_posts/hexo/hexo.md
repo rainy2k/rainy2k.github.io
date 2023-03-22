@@ -5,7 +5,6 @@ categories:
 - develop
 - hexo
 ---
-
 ## Create a new hexo blog
 ```bash
 hexo init xxx
