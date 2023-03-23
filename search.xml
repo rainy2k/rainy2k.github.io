@@ -25,6 +25,85 @@
     
     
     <entry>
+      <title>学习阅读记录</title>
+      <link href="/%E8%AE%B0%E5%BD%95/%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
+      <url>/%E8%AE%B0%E5%BD%95/%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 记录 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 记录 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>日常阅读记录</title>
+      <link href="/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
+      <url>/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 记录 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 记录 </tag>
+            
+            <tag> 日常 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>科研阅读记录</title>
+      <link href="/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
+      <url>/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[<p>CDN缓存相关论文——前期调研</p><table><colgroup><col style="width: 2%"><col style="width: 26%"><col style="width: 26%"><col style="width: 17%"><col style="width: 26%"></colgroup><thead><tr class="header"><th>论文</th><th>Separating Data via Block Invalidation Time Inference for Write Amplification Reduction in Log-Structured Storage</th><th>Operational Characteristics of SSDs in Enterprise Storage Systems: A Large-Scale Field Study</th><th>Learning Cache Replacement with Cacheus</th><th>BCW: Buffer-Controlled Writes to HDDs for SSD-HDD Hybrid Storage Server</th></tr></thead><tbody><tr class="odd"><td>关键词</td><td></td><td></td><td></td><td></td></tr><tr class="even"><td>会议</td><td></td><td></td><td></td><td></td></tr><tr class="odd"><td>动机</td><td></td><td></td><td></td><td></td></tr><tr class="even"><td>方法</td><td></td><td></td><td></td><td></td></tr><tr class="odd"><td></td><td></td><td></td><td></td><td></td></tr><tr class="even"><td></td><td></td><td></td><td></td><td></td></tr><tr class="odd"><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>]]></content>
+      
+      
+      <categories>
+          
+          <category> 记录 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 记录 </tag>
+            
+            <tag> 科研 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>《现代操作系统》读书笔记</title>
       <link href="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
       <url>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/</url>
