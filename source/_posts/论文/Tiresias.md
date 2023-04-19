@@ -1,5 +1,5 @@
 ---
-title: Tiresias: A GPU Cluster Manager for Distributed Deep Learning 论文笔记
+title: "Tiresias: A GPU Cluster Manager for Distributed Deep Learning 论文笔记"
 date: 2023-04-18 20:48:00
 tags: MLSys 
 categories:
