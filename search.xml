@@ -52,6 +52,33 @@
     
     
     <entry>
+      <title>ModelKeeper: Accelerating DNN Training via Automated Training Warmup</title>
+      <link href="/%E8%AE%BA%E6%96%87/ModelKeeper/"/>
+      <url>/%E8%AE%BA%E6%96%87/ModelKeeper/</url>
+      
+        <content type="html"><![CDATA[<h1 id="section"></h1><h1 id="modelkeeper-accelerating-dnn-training-via-automated-training-warmup">ModelKeeper: Accelerating DNN Training via Automated Training Warmup</h1><h2 id="动机">动机</h2><p>随着机器学习（ML）模型的部署越来越多，ML开发人员正在训练或重新训练越来越多的深度神经网络（DNN）。他们这样做是为了找到最合适的模型，以满足他们的精度要求，同时满足目标环境的资源和及时性限制。</p><p>In large shared clusters, the growing number of neural architecture search (NAS) and training jobs often result in ==models sharing architectural similarities with others from the same or a different ML developer==. However, existing solutions do not provide a systematic mechanism to identify and leverage such similarities.</p><p>在大型共享集群中，越来越多的神经架构搜索（NAS）和训练工作往往导致模型与来自同一或不同的ML开发者的其他模型共享架构相似性。然而，现有的解决方案并没有提供一个系统的机制来识别和利用这种相似性。</p><figure><img src="/%E8%AE%BA%E6%96%87/ModelKeeper/image-20230421002109530.png" alt><figcaption>image-20230421002109530</figcaption></figure><h2 id="模型">模型</h2><p>我们提出了ModelKeeper，这是第一个自动训练预热系统（the first automated training warmup system），<strong>通过在共享集群中重新利用以前训练的模型来加速DNN训练</strong>。</p><h3 id="main-idea">main idea</h3><p>我们的主要观点是，通过转换已经训练过的模型的权重来初始化训练工作的模型，可以快速启动它并减少所需的总训练量。然而，随着时间的推移，提交的模型在架构和准确度上会有所不同。</p><p>“In this paper, our key insight is that one can reduce the amount of training needed for model convergence by leveraging a well-trained model’s weights to warm up the training of a new model.”</p><p>🔤可以通过利用训练有素的模型的权重来预热新模型的训练，从而减少模型收敛所需的训练量。🔤</p><p>给定一个要训练的新模型，ModelKeeper可扩展地识别其与先前训练的模型的架构相似性，选择一个具有高相似性和良好模型精度的父模型，并执行结构感知的权重转换，以在新模型权重的预热期间保留来自父模型的最大信息。</p><h3 id="modelkeeper-架构">ModelKeeper 架构</h3><figure><img src="/%E8%AE%BA%E6%96%87/ModelKeeper/image-20230421002323623.png" alt><figcaption>image-20230421002323623</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/ModelKeeper/image-20230421002413309.png" alt><figcaption>image-20230421002413309</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/ModelKeeper/image-20230421002433209.png" alt><figcaption>image-20230421002433209</figcaption></figure><h2 id="评估">评估</h2><p>我们对数以千计的CV和NLP模型的评估表明，ModelKeeper实现了1.3×-4.3×的训练完成速度，而且开销不大，模型精度也没有降低。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 科研 </category>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MLSys </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>TOPOOPT: Co-optimizing Network Topology and Parallelization Strategy for Distributed Training Jobs</title>
       <link href="/%E8%AE%BA%E6%96%87/TOPOOPT/"/>
       <url>/%E8%AE%BA%E6%96%87/TOPOOPT/</url>
@@ -162,7 +189,7 @@
       <link href="/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
       <url>/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
       
-        <content type="html"><![CDATA[<h1 id="方法论类">方法论类</h1><table><thead><tr class="header"><th>书</th><th></th><th></th></tr></thead><tbody><tr class="odd"><td><稀缺></稀缺></td><td></td><td></td></tr></tbody></table>]]></content>
+        <content type="html"><![CDATA[<h1 id="方法论类">方法论类</h1><table><thead><tr class="header"><th>书</th><th></th><th></th></tr></thead><tbody><tr class="odd"><td><稀缺></稀缺></td><td></td><td></td></tr></tbody></table><h2 id="todo">todo</h2><h3 id="女性作者书单">女性作者书单</h3><p>https://www.bilibili.com/video/BV1pv4y1t7qg/?vd_source=9f5e1caf4dead6cc1112ecc246b91914</p><p>式部-《源氏物语》</p><p>简·奥斯汀-《傲慢与偏见》</p><p>玛丽·雪莱-《弗兰肯斯坦》</p><p>夏洛蒂·勃朗特-《简·爱》</p><p>艾米莉·勃朗特-《呼啸山庄》</p><p>艾米莉·狄金森-《狄金森全集》</p><p>路易莎·梅·奥尔科特-《小妇人》</p><p>樋口一叶-《青梅竹马》</p><p>露西·莫德·蒙哥马利-《绿山墙的安妮》</p><p>海伦·凯勒-《假如给我三天的光明》</p><p>艾德琳·弗吉尼亚·伍尔芙-《到灯塔去》</p><p>凯伦·布里克森-《走出非洲》</p><p>阿加莎·克里斯蒂-《东方快车谋杀案》</p><p>多萝西·帕克-《缝衣曲》</p><p>玛格丽特·米切尔-《飘》</p><p>林徽因-《你是那人间的四月天》</p><p>西蒙娜·德·波伏娃-《第二性》</p><p>萧红-《生死场》 杨绛-《我们仨》</p><p>杜拉斯-《广岛之恋》</p><p>雪莉·杰克逊-《摸彩》</p><p>卡森·麦卡勒斯-《心是孤独的猎手》</p><p>多丽丝·莱辛-《金色笔记》</p><p>张爱玲-《倾城之恋》</p><p>哈珀·李-《杀死一只知更鸟》</p><p>托妮·莫里森-《最蓝的眼睛》</p><p>艾丽丝·门罗-《逃离》</p><p>苏珊·桑塔格-《疾病的隐喻》</p><p>弗朗索瓦丝·萨冈-《你好，忧愁》</p><p>玛格丽特·阿特伍德-《使女的故事》</p><p>安妮·埃尔诺-《悠悠岁月》</p><p>安吉拉·卡特-《萨德式女人》</p><p>三毛-《撒哈拉的故事》</p><p>埃莱娜·费兰特-《我的天才女友》</p><p>上野千鹤子-《厌女》</p><p>阿列克谢耶维奇-《我是女兵，也是女人》</p><p>赫塔·米勒-《狐狸那时已是猎人》</p><p>王安忆-《长恨歌》</p><p>珍妮特·温特森-《橘子不是唯一的水果》</p><p>虹影-《饥饿的女儿》</p><p>奥尔加·托卡尔丘克-《白天的房子，夜晚的房子》</p><p>J.K·罗琳-《哈利波特》</p><p>萨拉·沃特斯-《轻舔丝绒》</p><p>妙莉叶·芭贝里-《刺猬的优雅》</p><p>三浦紫苑-《强风吹拂》</p><p>赵南柱-《82年生的金智英》 李</p><p>娟-《冬牧场》</p><p>金爱烂-《你的夏天还好吗？》</p><p>林棹-《潮汐图》</p><p>萨利·鲁尼-《正常人》</p>]]></content>
       
       
       <categories>
@@ -189,7 +216,7 @@
       <link href="/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
       <url>/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
       
-        <content type="html"><![CDATA[<h1 id="cdn缓存相关论文">CDN缓存相关论文</h1><h2 id="前期调研">前期调研</h2><h3 id="高度相关的论文4篇">高度相关的论文(4篇)</h3><table><colgroup><col style="width: 2%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"></colgroup><thead><tr class="header"><th>论文</th><th>Separating Data via Block Invalidation Time Inference for Write Amplification Reduction in Log-Structured Storage</th><th>Operational Characteristics of SSDs in Enterprise Storage Systems: A Large-Scale Field Study</th><th>Learning Cache Replacement with Cacheus</th><th style="text-align: left;">BCW: Buffer-Controlled Writes to HDDs for SSD-HDD Hybrid Storage Server</th></tr></thead><tbody><tr class="odd"><td>关键词</td><td>日志写，写放大</td><td>关于工业界SSD数据的servey</td><td>Cacheus<br>replacement的算法优化</td><td style="text-align: left;">发挥HDD的优势</td></tr><tr class="even"><td>会议</td><td>FAST22</td><td>FAST22</td><td>FAST21</td><td style="text-align: left;">FAST20</td></tr><tr class="odd"><td>动机</td><td>写放大的问题</td><td>分析了SSD中的写放大、fullness、wear out等问题在工业数据中的体现。</td><td>将workload分为4种类型,分别是LRU-Friendly,LFU-Friendly,scan和churn</td><td style="text-align: left;">HDD中的顺序和连续写入出现了周期性阶梯形写入延迟模式，低延迟(35<span class="math inline">\(\mu s\)</span>),中延迟(55<span class="math inline">\(\mu s\)</span>), 高延迟(12<span class="math inline">\(ms\)</span>)。<br>HDD是可能接近SSD的时延的。</td></tr><tr class="even"><td>方法</td><td>根据预测的BIT，把death time相近的数据放到一个组里。（然后呢？）</td><td></td><td>CR-LFU和SR-LRU</td><td style="text-align: left;">学习写入的模式。</td></tr></tbody></table><h3 id="相关的论文">相关的论文</h3>]]></content>
+        <content type="html"><![CDATA[<ul><li>Gandiva</li></ul><h1 id="cdn缓存相关论文">CDN缓存相关论文</h1><h2 id="前期调研">前期调研</h2><h3 id="高度相关的论文4篇">高度相关的论文(4篇)</h3><table><colgroup><col style="width: 2%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"></colgroup><thead><tr class="header"><th>论文</th><th>Separating Data via Block Invalidation Time Inference for Write Amplification Reduction in Log-Structured Storage</th><th>Operational Characteristics of SSDs in Enterprise Storage Systems: A Large-Scale Field Study</th><th>Learning Cache Replacement with Cacheus</th><th style="text-align: left;">BCW: Buffer-Controlled Writes to HDDs for SSD-HDD Hybrid Storage Server</th></tr></thead><tbody><tr class="odd"><td>关键词</td><td>日志写，写放大</td><td>关于工业界SSD数据的servey</td><td>Cacheus<br>replacement的算法优化</td><td style="text-align: left;">发挥HDD的优势</td></tr><tr class="even"><td>会议</td><td>FAST22</td><td>FAST22</td><td>FAST21</td><td style="text-align: left;">FAST20</td></tr><tr class="odd"><td>动机</td><td>写放大的问题</td><td>分析了SSD中的写放大、fullness、wear out等问题在工业数据中的体现。</td><td>将workload分为4种类型,分别是LRU-Friendly,LFU-Friendly,scan和churn</td><td style="text-align: left;">HDD中的顺序和连续写入出现了周期性阶梯形写入延迟模式，低延迟(35<span class="math inline">\(\mu s\)</span>),中延迟(55<span class="math inline">\(\mu s\)</span>), 高延迟(12<span class="math inline">\(ms\)</span>)。<br>HDD是可能接近SSD的时延的。</td></tr><tr class="even"><td>方法</td><td>根据预测的BIT，把death time相近的数据放到一个组里。（然后呢？）</td><td></td><td>CR-LFU和SR-LRU</td><td style="text-align: left;">学习写入的模式。</td></tr></tbody></table><h3 id="相关的论文">相关的论文</h3>]]></content>
       
       
       <categories>
@@ -243,7 +270,7 @@
       <link href="/%E8%AE%BA%E6%96%87/%E8%AE%BA%E6%96%87%E5%AD%98%E6%A1%A3/"/>
       <url>/%E8%AE%BA%E6%96%87/%E8%AE%BA%E6%96%87%E5%AD%98%E6%A1%A3/</url>
       
-        <content type="html"><![CDATA[<h1 id="todolist">todolist</h1><p>-[] Gandiva</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="todolist">todolist</h1><ul><li>gandiva</li></ul><h2 id="shepherd-serving-dnns-in-the-wild">SHEPHERD: Serving DNNs in the Wild</h2><p>摘要：</p><p>模型服务系统为许多新兴的交互式网络服务观察大量的推理请求。这些系统需要具有可扩展性，保证系统的高吞吐量，并使各计算单元的资源利用率最大化。然而，同时实现这三个目标是具有挑战性的，因为推理请求有非常严格的延迟限制（10-500毫秒），而生产工作负载在如此小的时间颗粒度上可能是极其不可预测的。</p><p>我们提出了SHEPHERD，这是一个模型服务系统，在工作负载不可预测的情况下实现了所有三个目标。SHEPHERD采用两层设计，将模型服务解耦为规划和服务模块。在规划方面，SHEPHERD利用了这样的观点：虽然单个请求流可能是高度不可预测的，但将请求流聚集成适度大小的组，可以大大改善可预测性，允许高资源利用率和可扩展性。为了提供服务，SHEPHERD采用了一种新的在线算法，通过仔细利用抢占和特定模型的批处理特性，在工作负载不可预测的情况下提供有保证的良好吞吐量。对生产工作负载的评估结果表明，SHEPHERD与先前的最先进技术相比，实现了高达18.1倍的良好产量和1.8倍的利用率，同时可扩展到数百个工人。</p><p><a href="https://www.usenix.org/conference/nsdi23/presentation/zhang-hong">SHEPHERD: Serving DNNs in the Wild | USENIX</a></p><h2 id="better-together-jointly-optimizing-ml-collective-scheduling-and-execution-planning-using-syndicate">Better Together: Jointly Optimizing ML Collective Scheduling and Execution Planning using SYNDICATE</h2><p>摘要： 新兴的ML训练部署正趋向于更大的模型和混合并行训练，这不仅仅是计算密集型的梯度聚合的全还原，也是带宽密集型的集合（例如，全对全）。这些新出现的集合体加剧了通信瓶颈，尽管异构网络互连有充足的多路径机会。在这项工作中，我们提出了SYNDICATE，一个系统化的通用框架，以最大限度地减少通信瓶颈，加快最先进和未来的大规模模型和互连的训练。SYNDICATE提出了一个新的抽象概念，即动机，将大型通信工作分解为较小的部分，作为执行计划的一部分。SYNDICATE还通过重新思考用于ML训练的网络系统堆栈的接口，对调度和执行计划进行了联合优化。Motifs在调度过程中提供了更大的灵活性，联合优化器通过打包和排序通信工作来利用这种灵活性，以最大限度地提高网络利用率和与计算的重叠。这使最先进的大型模型的训练速度提高了21-74%。</p><p><a href="https://www.usenix.org/conference/nsdi23/presentation/mahajan">Better Together: Jointly Optimizing ML Collective Scheduling and Execution Planning using SYNDICATE | USENIX</a></p>]]></content>
       
       
       <categories>
