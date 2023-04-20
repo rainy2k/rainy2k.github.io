@@ -6,19 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="方法论类    书">
+    <meta name="description" content="虚拟环境 始终以conda的虚拟环境为准，所有包都安装到这里。 vscode的interpreter也选择这个base环境的python。  image-20230419182519963">
 <meta property="og:type" content="article">
-<meta property="og:title" content="日常阅读记录">
-<meta property="og:url" content="https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:title" content="python">
+<meta property="og:url" content="https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/index.html">
 <meta property="og:site_name" content="Rainy2k">
-<meta property="og:description" content="方法论类    书">
+<meta property="og:description" content="虚拟环境 始终以conda的虚拟环境为准，所有包都安装到这里。 vscode的interpreter也选择这个base环境的python。  image-20230419182519963">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-03-23T04:01:21.000Z">
-<meta property="article:modified_time" content="2023-04-20T11:42:28.154Z">
+<meta property="og:image" content="https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/image-20230419182519963.png">
+<meta property="article:published_time" content="2023-04-20T11:42:28.150Z">
+<meta property="article:modified_time" content="2023-04-20T11:42:28.150Z">
 <meta property="article:author" content="Rainy2k">
-<meta property="article:tag" content="记录">
-<meta property="article:tag" content="日常">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="工具">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/image-20230419182519963.png">
     
     
       
@@ -38,7 +40,7 @@
       
     
     <!-- title -->
-    <title>日常阅读记录</title>
+    <title>python</title>
     <!-- styles -->
     
 <link rel="stylesheet" href="/css/style.css">
@@ -94,10 +96,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" aria-label="Previous post" href="/%E8%AE%B0%E5%BD%95/%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Previous post" href="/%E5%B7%A5%E5%85%B7/hexo/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" aria-label="Next post" href="/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Next post" href="/%E8%AE%BA%E6%96%87/TOPOOPT/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -110,22 +112,22 @@
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&text=日常阅读记录"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&is_video=false&description=日常阅读记录"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=日常阅读记录&body=Check out this article: https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&name=日常阅读记录&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&t=日常阅读记录"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&text=python"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&is_video=false&description=python"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=python&body=Check out this article: https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&name=python&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&t=python"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BA%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">方法论类</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">虚拟环境</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -137,7 +139,7 @@
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
-        日常阅读记录
+        python
     </h1>
 
 
@@ -149,7 +151,7 @@
       
     <div class="postdate">
       
-        <time datetime="2023-03-23T04:01:21.000Z" itemprop="datePublished">2023-03-23</time>
+        <time datetime="2023-04-20T11:42:28.150Z" itemprop="datePublished">2023-04-20</time>
         
       
     </div>
@@ -158,19 +160,19 @@
       
     <div class="article-category">
         <i class="fas fa-archive"></i>
-        <a class="category-link" href="/categories/%E8%AE%B0%E5%BD%95/">记录</a>
+        <a class="category-link" href="/categories/%E7%8E%AF%E5%A2%83/">环境</a>
     </div>
 
 
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link-link" href="/tags/%E6%97%A5%E5%B8%B8/" rel="tag">日常</a>, <a class="tag-link-link" href="/tags/%E8%AE%B0%E5%BD%95/" rel="tag">记录</a>
+        <a class="tag-link-link" href="/tags/python/" rel="tag">python</a>, <a class="tag-link-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a>
     </div>
 
 
       <span class="post-count">
-        | 共5字
+        | 共36字
         </span>
         <span class="post-count">
         | 预计1分钟
@@ -183,23 +185,12 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h1 id="方法论类">方法论类</h1>
-<table>
-<thead>
-<tr class="header">
-<th>书</th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><稀缺></稀缺></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
+    <h2 id="虚拟环境">虚拟环境</h2>
+<p>始终以conda的虚拟环境为准，所有包都安装到这里。</p>
+<p>vscode的interpreter也选择这个base环境的python。</p>
+<figure>
+<img src="/%E5%B7%A5%E5%85%B7/python/image-20230419182519963.png" alt><figcaption>image-20230419182519963</figcaption>
+</figure>
 
   </div>
 </article>
@@ -229,22 +220,22 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BA%E7%B1%BB"><span class="toc-number">1.</span> <span class="toc-text">方法论类</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">虚拟环境</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&text=日常阅读记录"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&is_video=false&description=日常阅读记录"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=日常阅读记录&body=Check out this article: https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&title=日常阅读记录"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&name=日常阅读记录&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%B0%E5%BD%95/%E6%97%A5%E5%B8%B8%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/&t=日常阅读记录"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&text=python"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&is_video=false&description=python"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=python&body=Check out this article: https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&title=python"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&name=python&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E5%B7%A5%E5%85%B7/python/&t=python"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
