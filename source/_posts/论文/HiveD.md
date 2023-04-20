@@ -1,9 +1,11 @@
 ---
 title: HiveD
 date: 2023-03-04 20:52:00
-# tags: MLSys 
-# categories:
-# - 论文
+tags: 
+- MLSys 
+categories:
+- 科研
+- 论文
 ---
 
 # HiveD
