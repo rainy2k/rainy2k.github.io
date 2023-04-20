@@ -8,9 +8,7 @@ categories:
 - 论文
 ---
 
-## Tiresias: A GPU Cluster Manager for Distributed Deep Learning
-
-### abstract
+## abstract
 
 NSDI'2019
 

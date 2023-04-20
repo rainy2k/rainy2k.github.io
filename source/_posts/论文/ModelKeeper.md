@@ -9,10 +9,6 @@ categories:
 
 ---
 
-# 
-
-# ModelKeeper: Accelerating DNN Training via Automated Training Warmup
-
 
 
 ## 动机
