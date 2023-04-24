@@ -52,6 +52,112 @@
     
     
     <entry>
+      <title>计算体系结构课程</title>
+      <link href="/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B/"/>
+      <url>/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B/</url>
+      
+        <content type="html"><![CDATA[<p>CC-NUMA(Cache-Coherent Non Uniform Memory Access)</p><p>广播的开销大</p><ul><li>采用基于目录的方法来维持处理器之间的高速缓存一致性</li><li>高速缓存一致性决定了系统的可扩放性</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 课程笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 课程笔记 </tag>
+            
+            <tag> 体系结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>SHEPHERD: Serving DNNs in the Wild 论文笔记</title>
+      <link href="/%E8%AE%BA%E6%96%87/SHEPHERD/"/>
+      <url>/%E8%AE%BA%E6%96%87/SHEPHERD/</url>
+      
+        <content type="html"><![CDATA[<h2 id="abstract">Abstract</h2><p><strong>模型服务系统 (Model serving systems)</strong> 需要满足的特性：</p><p>These systems need to be scalable, guarantee high system goodput and maximize resource utilization across compute units</p><ul><li>可扩展 (scalable)</li><li>高系统吞吐量 (high system goodput)</li><li>最大限度地提高计算单元的资源利用率 (resource utilization)</li></ul><figure><img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424084940958.png" alt><figcaption>image-20230424084940958</figcaption></figure><h2 id="挑战">挑战</h2><p>推理请求具有非常严格的延迟限制（10-500 毫秒），并且生产工作负载在如此小的时间粒度上可能极其不可预测。</p><h3 id="unpredictability">Unpredictability</h3><p><strong>short-term workload unpredictability</strong></p><blockquote><p>请求到达模式的不可预测性与先前的工作中展示的性能可预测性是正交的，在这些工作中，推理请求在GPU上的执行延迟通常是可预测的。</p></blockquote><p>平均请求到达率在较长时间范围内 (e.g. Hours) 是可以预测的.</p><p>在较小的时间颗粒度（如毫秒），它们大概率是不可预测的，必须考虑满足每个请求的SLO截止日期.</p><p>虽然单个请求流 (request stream) 可能是高度不可预测的，但将请求流聚合到中等大小的组 <strong>(moderately-sized group)</strong> 中可以大大提高可预测性，从而实现高资源利用率和可扩展性。</p><figure><img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424085129541.png" alt><figcaption>image-20230424085129541</figcaption></figure><h2 id="shepherd-design">SHEPHERD Design</h2><p>SHEPHERD是一个模型服务系统，它在<strong>工作负载不可预测的情况下</strong>实现了三个目标：scalable,high system goodput, resource utilization.</p><p>SHEPHERD employs a novel online algorithm that provides guaranteed goodput under workload unpredictability by carefully leveraging preemptions and modelspecific batching properties.</p><p>SHEPHERD 采用一种新颖的在线算法，通过仔细利用<strong>抢占</strong>和<strong>模型特定的批处理属性</strong>，在工作负载不可预测的情况下提供有保证的吞吐量。</p><h3 id="整体设计">整体设计</h3><p>SHEPHERD 使用两级设计，将模型服务 (model serving) 解耦为<strong>规划 (planning) 和服务 (serving) 模块</strong>。</p><figure><img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091134987.png" alt><figcaption>Overview of SHEPHERD design</figcaption></figure><h3 id="在线调度器flex算法">在线调度器：FLEX算法</h3><figure><img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091405450.png" alt><figcaption>image-20230424091405450</figcaption></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 科研 </category>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MLSys </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>博客合集</title>
+      <link href="/%E8%AE%B0%E5%BD%95/%E5%88%AB%E4%BA%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/"/>
+      <url>/%E8%AE%B0%E5%BD%95/%E5%88%AB%E4%BA%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/</url>
+      
+        <content type="html"><![CDATA[<p><a href="https://pancrasl.gitee.io/2021/03/29/Learning-Cache-Replacement-with-CACHEUS/">FAST21'《Learning Cache Replacement with CACHEUS》论文阅读笔记 | PancrasL的博客 (gitee.io)</a></p><p><a href="https://blog.csdn.net/Sableye/article/details/120733688">prefetch相关论文阅读笔记_Kartano的博客-CSDN博客</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 记录 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 记录 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CACHEUS和缓存替换算法</title>
+      <link href="/%E8%AE%BA%E6%96%87/CACHEUS/"/>
+      <url>/%E8%AE%BA%E6%96%87/CACHEUS/</url>
+      
+        <content type="html"><![CDATA[<h1 id="cacheus">CACHEUS</h1><p><a href="https://www.usenix.org/conference/fast21/presentation/rodriguez">Learning Cache Replacement with CACHEUS | USENIX</a></p><p><a href="https://www.usenix.org/sites/default/files/conference/protected-files/fast21_slides_yusuf.pdf">fast21_slides_yusuf.pdf (usenix.org)</a></p><p><a href="https://pancrasl.gitee.io/2021/03/29/Learning-Cache-Replacement-with-CACHEUS/">FAST21'《Learning Cache Replacement with CACHEUS》论文阅读笔记 | PancrasL的博客 (gitee.io)</a></p><h2 id="q算法">2Q算法</h2><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102736369.png" alt><figcaption>image-20230421102736369</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101415258.png" alt><figcaption>image-20230421101415258</figcaption></figure><p>2Q：核心思想类似LRU-2，由一个fifo（A1）和一个lru_list（Am）组成，降低了实现LRU-2的时间复杂度。</p><p>发现了一种常见的workload：一个新的page被加载到缓存后，短时间内会被多次访问，但过了一段时间有可能不会再被访问也有可能被继续访问，<strong>若是被继续访问，说明这是个值得长期保存的page</strong>。</p><p>所以把fifo划分成了A1in和A1out，A1in存放首次访问的page，A1out保留从A1in中淘汰的page的索引。若一个新pageA首次加载被放入A1in中时，由于在短时间内会被多次访问，所以即使在fifo队列中，也不会那么容易被淘汰。若一段时间后，pageA被淘汰了，索引保存在A1out的索引中，然后又过了一段时间，发现pageA再次被访问，则说明该page是个会被长期访问的page，就会把pageA加载到Am上，后续访问pageA能在Am直接命中，且将其移至Am头部，确保不易被淘汰。</p><p>•优点：降低了LRU-2的实现复杂度。</p><p>•缺点：还是需要调参，有两个参数Kin和Kout。Kin表示A1in的大小，有点像CIP；Kout表示A1out的大小。</p><blockquote><p>A1in中的页被命中既不会被提前也不会被promote到Am中，promote会推迟到页被淘汰出缓存，进入A1out才发生，这才是full version的核心，可是这样的目的是啥呢？ 文中对于完整版相较于简化版本的优化是这样解释的：如果有一种访问模式，其中某一些页在一段时间内被频繁地访问，但是接下来就不再被访问，那么这样的页应当被及时的从缓存中移走，而不是进入Am；也就是说作者主张，简化版本之所以效果不好，是因为它无法很好地处理上述访问模式，而修改之后的完整版可以，那么这样的解释是合理的吗？ ———————————————— 版权声明：本文为CSDN博主「Kartano」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。 原文链接：https://blog.csdn.net/Sableye/article/details/118703319</p></blockquote><h2 id="multi-queuemq">Multi-Queue(MQ)</h2><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101602697.png" alt><figcaption>image-20230421101602697</figcaption></figure><p><strong>Minimal Lifetime</strong></p><ul><li>对于一个给定的负载，缓存中的热数据块应该保持最少minDist时间</li><li>变量minDist是对多种实际环境下的负载进行统计后得出的结论，它描述进入二级缓存的数据块在缓存中应该驻留的最小时间量。</li></ul><p><strong>Frequency-based priority</strong></p><ul><li>数据块的优先级应该基于它们的访问频率</li></ul><p><strong>Temporal frequency</strong></p><ul><li>过去访问频繁但现在很少被访问的数据块应该被替换掉</li></ul><p>MQ采用多级队列，每个队列保存被访问了一定次数的数据块</p><ul><li><p>MQ算法使用多个LRU队列:Q0,Q1......,Qm-1。位于Qj中的缓存块拥有比Qi中缓存块更长的生存时间(j&gt;i)</p></li><li><p>MQ还有一个历史队列Qout，它是一个有限长的FIFO队列，用来记录从LRU队列中淘汰的缓存块</p></li><li><p>当cache命中时，则该数据块的访问频率f+1，并且根据QueueNum(f)确定它所在的序列，通常QueueNum定义为log2(f)。</p></li><li><p>每次访问都会看队尾的数据块是否过期，如果过期，则移动到下一级队列。</p><ul><li>生命周期由 MQ 算法动态定义为对同一文件的两次访问之间的最大时间距离或缓存块的数量</li></ul></li><li><p>如果对数据块的访问没有命中，则从优先级最低的非空队列中淘汰掉队首元素，当队首元素被淘汰掉时，它的标志符和当前的访问频率将插入Qout队列队尾。</p><ul><li>如果Qout队列已满，则依据FIFO算法淘汰掉Qout队列中最老的也就是队首元素。</li></ul></li></ul><h2 id="arc算法">ARC算法</h2><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101727662.png" alt><figcaption>image-20230421101727662</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101735178.png" alt><figcaption>image-20230421101735178</figcaption></figure><p>动态调整的思路：</p><ul><li>访问B1时，说明当前的窗口p较小，将p增大</li><li>访问B2时，说明倾向于访问有频度的数据，将p减小</li></ul><h2 id="lirs">LIRS</h2><p><strong>Low Inter-reference Recency Set(LIRS)</strong></p><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101807771.png" alt><figcaption>image-20230421101807771</figcaption></figure><p><strong>IRR(Inter-Reference Recency):</strong> 最近连续两次块访问之间访问其他块的个数。</p><ul><li>IRR 可以衡量数据当前访问的频度。</li><li>IRR 越高说明在某个时间区间中，该数据的热度较低</li><li>根据高低区分了 LIR(Low IRR Block) 和 HIR(High IRR Block)</li><li>LIR: 低 IRR, 热数据，全都写在缓存中</li><li>HIR: 高 IRR, 冷数据，不一定写在缓存中。驻留在缓存中的部分称为resident-HIR，否则称为nonresident-HIR.</li></ul><p><strong>R(Recency):</strong> 最近一次访问到当前时间内访问其他块的个数，即 LRU 的维护的数据。</p><ul><li>==核心假设: <strong>认为</strong> <strong>IRR</strong> <strong>大的数据，那么下一次的</strong> <strong>IRR</strong> <strong>会更大</strong>==</li></ul><p>算法：</p><ul><li>当S中的HIR被命中：<ul><li>HIR转换为LIR，并且移动到S栈顶</li><li>并且，S栈底的LIR变成一个HIR，并且被移动到Q栈顶。</li></ul></li><li>当S中的LIR被命中：<ul><li>该LIR移动到S栈顶。</li><li>如果S的栈底不是LIR，则进行Stack Tuning，驱逐栈底的HIR，直到栈底是LIR。<ul><li>要对比 IRR 值其实可以通过对比 R 值来实现，如果一个 HIR 块的 R 值小于某个 LIR 块的 R 值，那么当这个 HIR 块被命中时，其 IRR 值肯定小于这个 LIR 块的下一个 IRR 值，所以剔除 LIR 时简单的比较 R 值就行。</li></ul></li></ul></li></ul><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421101950566.png" alt><figcaption>image-20230421101950566</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102022416.png" alt><figcaption>image-20230421102022416</figcaption></figure><h2 id="dlirs算法">DLIRS算法</h2><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102013956.png" alt><figcaption>image-20230421102013956</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102029954.png" alt><figcaption>image-20230421102029954</figcaption></figure><p>调整的思路：</p><ul><li>如果请求数据属于non-resident HIR block，应该为resident HIR提供更多空间。</li><li>如果请求数据为demoted block，说明分配给LIR的空间较小，导致了不适当的降级，应该为LIR提供更多空间。</li></ul><blockquote><p>由于在对LRU友好的工作负载下，LIRS的性能受到非驻留HIR块相对接近LIRS堆栈的MRU位置的影响，所以自然要为HIR块分配更多的缓存空间，以便这些非驻留块成为驻留块。</p><p>然而，这是以减少LIR块条目的数量为代价的，限制了LIRS堆栈的长度，从而减少了跟踪的非驻留HIR块的数量，这最终会降低在其他工作负载中捕捉长时间距离的重复访问的能力。</p><p>动态LIRS（DLIRS），这是一个新的政策，它动态地将缓存空间分配给LIR块，而不是HIR块，以适应不同类型的工作负载。</p></blockquote><h2 id="cacheus-1">CACHEUS</h2><h3 id="workload">Workload</h3><ul><li>LRU-Friendly</li><li>LFU-Friendly</li><li>Scan：顺序访问存储数据中的一个子集，子集中的每个元素只访问一次</li><li>Churn：同样是不断访问存储数据中的一个子集，不过每次随机访问子集中的任一数据，所有数据都有相同的概率被访问。</li></ul><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102121696.png" alt><figcaption>image-20230421102121696</figcaption></figure><h3 id="算法">算法</h3><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102114433.png" alt><figcaption>image-20230421102114433</figcaption></figure><p>SF-LRU和2Q有什么区别？</p><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102139458.png" alt><figcaption>image-20230421102139458</figcaption></figure><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102143612.png" alt><figcaption>image-20230421102143612</figcaption></figure><h3 id="sr-lru">SR-LRU</h3><figure><img src="/%E8%AE%BA%E6%96%87/CACHEUS/image-20230421102125773.png" alt><figcaption>image-20230421102125773</figcaption></figure><h2 id="links">Links</h2><ul><li><p><a href="https://pancrasl.gitee.io/2021/03/29/Learning-Cache-Replacement-with-CACHEUS/">FAST21'《Learning Cache Replacement with CACHEUS》论文阅读笔记 | PancrasL的博客 (gitee.io)</a></p></li><li><p><a href="https://emperorlu.github.io/replica-placement-with-RL/">基于强化学习的存储优化研究 - Emperorlu’s Site</a></p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 科研 </category>
+          
+          <category> 论文 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Cache </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ModelKeeper: Accelerating DNN Training via Automated Training Warmup</title>
       <link href="/%E8%AE%BA%E6%96%87/ModelKeeper/"/>
       <url>/%E8%AE%BA%E6%96%87/ModelKeeper/</url>
@@ -216,7 +322,7 @@
       <link href="/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/"/>
       <url>/%E8%AE%B0%E5%BD%95/%E7%A7%91%E7%A0%94%E9%98%85%E8%AF%BB%E8%AE%B0%E5%BD%95/</url>
       
-        <content type="html"><![CDATA[<ul><li>Gandiva</li></ul><h1 id="cdn缓存相关论文">CDN缓存相关论文</h1><h2 id="前期调研">前期调研</h2><h3 id="高度相关的论文4篇">高度相关的论文(4篇)</h3><table><colgroup><col style="width: 2%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"></colgroup><thead><tr class="header"><th>论文</th><th>Separating Data via Block Invalidation Time Inference for Write Amplification Reduction in Log-Structured Storage</th><th>Operational Characteristics of SSDs in Enterprise Storage Systems: A Large-Scale Field Study</th><th>Learning Cache Replacement with Cacheus</th><th style="text-align: left;">BCW: Buffer-Controlled Writes to HDDs for SSD-HDD Hybrid Storage Server</th></tr></thead><tbody><tr class="odd"><td>关键词</td><td>日志写，写放大</td><td>关于工业界SSD数据的servey</td><td>Cacheus<br>replacement的算法优化</td><td style="text-align: left;">发挥HDD的优势</td></tr><tr class="even"><td>会议</td><td>FAST22</td><td>FAST22</td><td>FAST21</td><td style="text-align: left;">FAST20</td></tr><tr class="odd"><td>动机</td><td>写放大的问题</td><td>分析了SSD中的写放大、fullness、wear out等问题在工业数据中的体现。</td><td>将workload分为4种类型,分别是LRU-Friendly,LFU-Friendly,scan和churn</td><td style="text-align: left;">HDD中的顺序和连续写入出现了周期性阶梯形写入延迟模式，低延迟(35<span class="math inline">\(\mu s\)</span>),中延迟(55<span class="math inline">\(\mu s\)</span>), 高延迟(12<span class="math inline">\(ms\)</span>)。<br>HDD是可能接近SSD的时延的。</td></tr><tr class="even"><td>方法</td><td>根据预测的BIT，把death time相近的数据放到一个组里。（然后呢？）</td><td></td><td>CR-LFU和SR-LRU</td><td style="text-align: left;">学习写入的模式。</td></tr></tbody></table><h3 id="相关的论文">相关的论文</h3>]]></content>
+        <content type="html"><![CDATA[<h1 id="待看论文">待看论文</h1><h2 id="important">important</h2><ul><li>Gandiva</li></ul><h2 id="others">others</h2><p>关于prefetch的论文：</p><p>论文1. <a href="https://ieeexplore.ieee.org/document/9458930">Revisiting Data Prefetching for Database Systems with Machine Learning Techniques（2021）</a></p><p><a href="https://blog.csdn.net/Sableye/article/details/120733688">prefetch相关论文阅读笔记_Kartano的博客-CSDN博客</a></p><h1 id="cdn缓存相关论文">CDN缓存相关论文</h1><h2 id="前期调研">前期调研</h2><h3 id="高度相关的论文4篇">高度相关的论文(4篇)</h3><table><colgroup><col style="width: 2%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"><col style="width: 24%"></colgroup><thead><tr class="header"><th>论文</th><th>Separating Data via Block Invalidation Time Inference for Write Amplification Reduction in Log-Structured Storage</th><th>Operational Characteristics of SSDs in Enterprise Storage Systems: A Large-Scale Field Study</th><th>Learning Cache Replacement with Cacheus</th><th style="text-align: left;">BCW: Buffer-Controlled Writes to HDDs for SSD-HDD Hybrid Storage Server</th></tr></thead><tbody><tr class="odd"><td>关键词</td><td>日志写，写放大</td><td>关于工业界SSD数据的servey</td><td>Cacheus<br>replacement的算法优化</td><td style="text-align: left;">发挥HDD的优势</td></tr><tr class="even"><td>会议</td><td>FAST22</td><td>FAST22</td><td>FAST21</td><td style="text-align: left;">FAST20</td></tr><tr class="odd"><td>动机</td><td>写放大的问题</td><td>分析了SSD中的写放大、fullness、wear out等问题在工业数据中的体现。</td><td>将workload分为4种类型,分别是LRU-Friendly,LFU-Friendly,scan和churn</td><td style="text-align: left;">HDD中的顺序和连续写入出现了周期性阶梯形写入延迟模式，低延迟(35<span class="math inline">\(\mu s\)</span>),中延迟(55<span class="math inline">\(\mu s\)</span>), 高延迟(12<span class="math inline">\(ms\)</span>)。<br>HDD是可能接近SSD的时延的。</td></tr><tr class="even"><td>方法</td><td>根据预测的BIT，把death time相近的数据放到一个组里。（然后呢？）</td><td></td><td>CR-LFU和SR-LRU</td><td style="text-align: left;">学习写入的模式。</td></tr></tbody></table><h3 id="相关的论文">相关的论文</h3>]]></content>
       
       
       <categories>

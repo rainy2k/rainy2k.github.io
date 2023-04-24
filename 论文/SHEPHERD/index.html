@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Abstract 模型服务系统 (Model serving systems) 需要满足的特性： These systems need to be scalable, guarantee high system goodput and maximize resource utilization across compute units  可扩展 (scalable) 高系统吞吐量 (high sy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SHEPHERD: Serving DNNs in the Wild 论文笔记">
+<meta property="og:url" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/index.html">
+<meta property="og:site_name" content="Rainy2k">
+<meta property="og:description" content="Abstract 模型服务系统 (Model serving systems) 需要满足的特性： These systems need to be scalable, guarantee high system goodput and maximize resource utilization across compute units  可扩展 (scalable) 高系统吞吐量 (high sy">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424084940958.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424085129541.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091134987.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091405450.png">
+<meta property="article:published_time" content="2023-04-24T00:25:00.000Z">
+<meta property="article:modified_time" content="2023-04-24T01:21:56.270Z">
+<meta property="article:author" content="Rainy2k">
+<meta property="article:tag" content="MLSys">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424084940958.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/my.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/my.ico" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/my.ico">
+        
+      
+    
+    <!-- title -->
+    <title>SHEPHERD: Serving DNNs in the Wild 论文笔记</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/%E8%AE%B0%E5%BD%95/%E5%88%AB%E4%BA%BA%E7%9A%84%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&text=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&is_video=false&description=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SHEPHERD: Serving DNNs in the Wild 论文笔记&body=Check out this article: https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&name=SHEPHERD: Serving DNNs in the Wild 论文笔记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&t=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract"><span class="toc-number">1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%91%E6%88%98"><span class="toc-number">2.</span> <span class="toc-text">挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unpredictability"><span class="toc-number">2.1.</span> <span class="toc-text">Unpredictability</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shepherd-design"><span class="toc-number">3.</span> <span class="toc-text">SHEPHERD Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.1.</span> <span class="toc-text">整体设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E8%B0%83%E5%BA%A6%E5%99%A8flex%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">在线调度器：FLEX算法</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        SHEPHERD: Serving DNNs in the Wild 论文笔记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Rainy2k</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-04-24T00:25:00.000Z" itemprop="datePublished">2023-04-24</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%A7%91%E7%A0%94/">科研</a> › <a class="category-link" href="/categories/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87/">论文</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/MLSys/" rel="tag">MLSys</a>
+    </div>
+
+
+      <span class="post-count">
+        | 共461字
+        </span>
+        <span class="post-count">
+        | 预计1分钟
+        </span>
+        <span id="busuanzi_container_page_pv">
+        | 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </span>
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="abstract">Abstract</h2>
+<p><strong>模型服务系统 (Model serving systems)</strong> 需要满足的特性：</p>
+<p>These systems need to be scalable, guarantee high system goodput and maximize resource utilization across compute units</p>
+<ul>
+<li>可扩展 (scalable)</li>
+<li>高系统吞吐量 (high system goodput)</li>
+<li>最大限度地提高计算单元的资源利用率 (resource utilization)</li>
+</ul>
+<figure>
+<img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424084940958.png" alt><figcaption>image-20230424084940958</figcaption>
+</figure>
+<h2 id="挑战">挑战</h2>
+<p>推理请求具有非常严格的延迟限制（10-500 毫秒），并且生产工作负载在如此小的时间粒度上可能极其不可预测。</p>
+<h3 id="unpredictability">Unpredictability</h3>
+<p><strong>short-term workload unpredictability</strong></p>
+<blockquote>
+<p>请求到达模式的不可预测性与先前的工作中展示的性能可预测性是正交的，在这些工作中，推理请求在GPU上的执行延迟通常是可预测的。</p>
+</blockquote>
+<p>平均请求到达率在较长时间范围内 (e.g. Hours) 是可以预测的.</p>
+<p>在较小的时间颗粒度（如毫秒），它们大概率是不可预测的，必须考虑满足每个请求的SLO截止日期.</p>
+<p>虽然单个请求流 (request stream) 可能是高度不可预测的，但将请求流聚合到中等大小的组 <strong>(moderately-sized group)</strong> 中可以大大提高可预测性，从而实现高资源利用率和可扩展性。</p>
+<figure>
+<img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424085129541.png" alt><figcaption>image-20230424085129541</figcaption>
+</figure>
+<h2 id="shepherd-design">SHEPHERD Design</h2>
+<p>SHEPHERD是一个模型服务系统，它在<strong>工作负载不可预测的情况下</strong>实现了三个目标：scalable,high system goodput, resource utilization.</p>
+<p>SHEPHERD employs a novel online algorithm that provides guaranteed goodput under workload unpredictability by carefully leveraging preemptions and modelspecific batching properties.</p>
+<p>SHEPHERD 采用一种新颖的在线算法，通过仔细利用<strong>抢占</strong>和<strong>模型特定的批处理属性</strong>，在工作负载不可预测的情况下提供有保证的吞吐量。</p>
+<h3 id="整体设计">整体设计</h3>
+<p>SHEPHERD 使用两级设计，将模型服务 (model serving) 解耦为<strong>规划 (planning) 和服务 (serving) 模块</strong>。</p>
+<figure>
+<img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091134987.png" alt><figcaption>Overview of SHEPHERD design</figcaption>
+</figure>
+<h3 id="在线调度器flex算法">在线调度器：FLEX算法</h3>
+<figure>
+<img src="/%E8%AE%BA%E6%96%87/SHEPHERD/image-20230424091405450.png" alt><figcaption>image-20230424091405450</figcaption>
+</figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract"><span class="toc-number">1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%91%E6%88%98"><span class="toc-number">2.</span> <span class="toc-text">挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#unpredictability"><span class="toc-number">2.1.</span> <span class="toc-text">Unpredictability</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shepherd-design"><span class="toc-number">3.</span> <span class="toc-text">SHEPHERD Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="toc-number">3.1.</span> <span class="toc-text">整体设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E7%BA%BF%E8%B0%83%E5%BA%A6%E5%99%A8flex%E7%AE%97%E6%B3%95"><span class="toc-number">3.2.</span> <span class="toc-text">在线调度器：FLEX算法</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&text=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&is_video=false&description=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SHEPHERD: Serving DNNs in the Wild 论文笔记&body=Check out this article: https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&title=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&name=SHEPHERD: Serving DNNs in the Wild 论文笔记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/SHEPHERD/&t=SHEPHERD: Serving DNNs in the Wild 论文笔记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Rainy2k
+    
+      <!-- 不蒜子统计 -->
+      <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+      </span>
+      <span class="post-meta-divider">|</span>
+      <span id="busuanzi_container_site_uv" style='display:none'>
+              本站访客数<span id="busuanzi_value_site_uv"></span>人
+      </span>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
