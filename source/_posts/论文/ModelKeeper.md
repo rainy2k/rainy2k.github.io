@@ -65,6 +65,14 @@ In large shared clusters, the growing number of neural architecture search (NAS)
 
 
 
+![image-20230424092658319](ModelKeeper/image-20230424092658319.png)
+
+
+
+![image-20230424092716608](ModelKeeper/image-20230424092716608.png)
+
+
+
 ## 评估
 
 我们对数以千计的CV和NLP模型的评估表明，ModelKeeper实现了1.3×-4.3×的训练完成速度，而且开销不大，模型精度也没有降低。
