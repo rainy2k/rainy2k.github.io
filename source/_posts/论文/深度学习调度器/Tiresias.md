@@ -8,11 +8,25 @@ categories:
 - 论文
 ---
 
-## abstract
+解读：
+
+[分布式深度学习GPU管理之Tiresias-腾讯云开发者社区-腾讯云](https://cloud.tencent.com/developer/article/1408935)
+
+连接：
+
+https://github.com/SymbioticLab/Tiresias
 
 NSDI'2019
 
-这篇论文介绍了 Tiresias，一个为分布式深度学习定制的 GPU 集群管理器，它能有效地调度和放置 DL 作业以减少其作业完成时间（JCT）。
+Tiresias，一个为分布式深度学习定制的 GPU 集群管理器，它能有效地调度和放置 DL 作业以减少其作业完成时间（JCT）。
+
+挑战：
+
+- DL作业的时间不可预测
+
+- Over-Aggressive Job Consolidation
+  
+  - “过于激进的任务合并“
 
 鉴于 DL 作业的执行时间通常是不可预测的，作者提出了两种调度算法 
 
@@ -25,12 +39,7 @@ NSDI'2019
 实验结果表明，与生产中使用的基于 Apache YARN 的资源管理器相比，Tiresias 可将平均 JCT 提高多达 5.5 倍。
 更重要的是，Tiresias 的性能与假设完美知识的解决方案相当。
 
-
-
 ![image-20230418205429796](Tiresias/image-20230418205429796.png)
-
-
-
 
 ### Over-Aggressive Job Consolidation指的是什么
 
@@ -49,10 +58,6 @@ NSDI'2019
 Tiresias 实现了一个 RDMA 网络分析库，可以通过网络级活动确定 DDL 作业的模型结构。通过利用分析库和 DDL 训练的迭代性质，Tiresias 可以透明且智能地放置作业。
 Tiresias 首先在试验环境中运行作业几次迭代，然后根据先前测量总结出的标准确定最佳放置策略。
 
-
-
-
-
 ### Attained Service指的是什么
 
 Attained Service：作业已经获得的服务量。
@@ -61,15 +66,9 @@ Attained Service：作业已经获得的服务量。
 
 2DAS 调度器使用 Attained Service 来为每个作业分配优先级。
 
-
-
 每个作业的 Attained Service 基于它使用的 GPU 数量和到目前为止运行的时间计算。
 
-
-
 2DAS 可以根据不同的先验知识更改优先级函数。如果没有提供作业持续时间信息，则优先级函数应用 LAS 算法，其中作业的优先级与其 Attained Service 成反比。
-
-
 
 如果集群运营商提供了来自以前经验的作业持续时间分布，则作业的优先级等于其 Gittins 指数值。
 

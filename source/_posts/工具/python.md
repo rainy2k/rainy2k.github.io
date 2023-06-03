@@ -17,3 +17,6 @@ categories:
 vscode的interpreter也选择这个base环境的python。
 
 ![image-20230419182519963](python/image-20230419182519963.png)
+
+## python 处理 pdf 文件
+https://blog.csdn.net/AI19970205/article/details/124909974
