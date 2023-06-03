@@ -1,12 +1,14 @@
-```yaml
+---
 title: "nn-Meter: towards accurate latency prediction of deep-learning model inference on diverse edge devices."
 date: 2023-06-01 01:08:00
 tags: 
+
 - MLSys 
-categories:
+- NAS
+  categories:
 - 科研
 - 论文
-```
+---
 
 Link:[GitHub - microsoft/nn-Meter: A DNN inference latency prediction toolkit for accurately modeling and predicting the latency on diverse edge devices.](https://github.com/microsoft/nn-Meter)
 
@@ -16,10 +18,6 @@ Paper: https://air.tsinghua.edu.cn/pdf/nn-Meter-Towards-Accurate-Latency-Predict
 
 - https://zhuanlan.zhihu.com/p/402436426
 
-
-
-
-
 是什么？
 
 - 面向深度学习的移动端硬件延迟预测器
@@ -27,8 +25,6 @@ Paper: https://air.tsinghua.edu.cn/pdf/nn-Meter-Towards-Accurate-Latency-Predict
 - Tiresias
 
 - 
-
-
 
 Q1 该论文解决了什么问题？
 

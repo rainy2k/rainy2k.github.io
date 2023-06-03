@@ -1,4 +1,4 @@
-```yaml
+---
 title: "Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"
 date: 2023-06-01 16:21:00
 tags: 
@@ -7,13 +7,11 @@ tags:
 categories:
 - 科研
 - 论文
-```
+---
 
 OSDI‘21
 
 之前的大多数工作都需要用户预先指定每个 Training Job 所需要集群资源或者自动为每个 Job 静态分配集群资源，本项工作提出了调度器 Pollux，根据**每个 Job 当前运行的状态动态调整它们的资源**（例如 GPU 的数量）以及它们的**训练参数**（例如 learning rate 以及 batch size）来最大化整个集群的资源利用效率。
-
-
 
 **Distributed DL Training**
 
@@ -22,21 +20,17 @@ OSDI‘21
 System Throughput 的定义为单位时间所训练的样本数量，这里考虑主要的影响因素：
 
 1. **分配的资源（例如 GPU），资源越多 throughput 越高。**
-2. batch size 的大小，batch size 越大，throughput 越高。这主要因为大 batch size 的计算时间长，可以减少分布式训练中 <mark>synchronization</mark> 时间的占比。
+2. batch size 的大小，**batch size 越大，throughput 越高。这主要因为大 batch size 的计算时间长**，可以减少分布式训练中 <mark>synchronization</mark> 时间的占比。
    - synchronization 同步
 
 因此，在不更换训练算法的前提下，增加计算资源以及提高 batch size 可以有效地提高 throughput。
 
+<u>Statistical Efficiency 的定义为每个训练的样本对整个训练过程的贡献度</u>，这里也主要考虑两个影响因素：
 
-
-Statistical Efficiency 的定义为每个训练的样本对整个训练过程的贡献度，这里也主要考虑两个影响因素：
-
-1. batch size 的大小。一般地，batch size 越大，statistical efficiency 越低；但在不同的训练阶段，batch size 对 statistical efficiency 的影响程度也不同，例如在训练初期的影响较大，而在后期影响较小。
+1. batch size 的大小。一般地，batch size 越大，statistical efficiency 越低；<u>但在不同的训练阶段，batch size 对 statistical efficiency 的影响程度也不同，例如在训练初期的影响较大，而在后期影响较小。</u>
 2. learning rate。一般地，learning rate 越大，statistical efficiency 越高。
 
 因此，增大 batch size 反而会降低 statistical efficiency。
-
-- statistical efficiency 统计有效性
 
 如下图，对于 batch size 的调整需要综合考虑 throughput 和 statistical efficiency。
 
@@ -46,7 +40,7 @@ Statistical Efficiency 的定义为每个训练的样本对整个训练过程的
 
 本文核心的 idea 就是用一个新的指标：Goodput 来指导对集群资源的调度。
 
-Goodput 综合考虑了 throughput 和 efficiency，下图给出了本文对 Goodput 的定义。本项工作就是通过调整 a, m, s 三个参数来最大化 Goodput。
+**Goodput 综合考虑了 throughput 和 efficiency**，下图给出了本文对 Goodput 的定义。本项工作就是通过调整 a, m, s 三个参数来最大化 Goodput。
 
 ![](https://pic3.zhimg.com/80/v2-f21d78948649474def65e87b497fe09a_1440w.webp)
 
@@ -54,7 +48,7 @@ Goodput 综合考虑了 throughput 和 efficiency，下图给出了本文对 Goo
 
 为了最优化 Goodput，需要对 Throughput 和 Efficiency 两个指标进行建模并做实时的评估。下面简单介绍本文对两个指标的建模方式。
 
-对于 Throughput，根据定义，可以通过计算 batch size / 计算每个 iteration 的时间： THROUGHPUT(a,m,s) = M(a,m,s)/T_{iter}(a,m,s)
+对于 Throughput，根据定义，可以通过计算 batch size / 计算每个 iteration 的时间： $THROUGHPUT(a,m,s) = M(a,m,s)/T_{iter}(a,m,s)$
 
 而其中 T_{iter} 可以通过以下方式来计算：
 
@@ -66,7 +60,7 @@ Goodput 综合考虑了 throughput 和 efficiency，下图给出了本文对 Goo
 
 **Modeling Statistical Efficiency**
 
-Pollux 将 Efficiency 建模为 EFFICIENCY_t(M_0) 的相对值，并且在调整 batch size 的过程中只考虑 M \ge M_0，因此 Efficiency 的取值范围是 (0, 1]，例如如果某个时刻采用 batch size 为 M 时的 Efficiency 是 E，表达的含义是需要用 1/E 的样本来训练才能够达到初始 batch size M_0 用一个样本所能够达到的 progress。
+Pollux 将 Efficiency 建模为 $EFFICIENCY_t(M_0)$ 的相对值，并且在调整 batch size 的过程中只考虑 $M \ge M_0$，因此 Efficiency 的取值范围是 (0, 1]，例如如果某个时刻采用 batch size 为 M 时的 Efficiency 是 E，表达的含义是需要用 1/E 的样本来训练才能够达到初始 batch size $M_0$ 用一个样本所能够达到的 progress。
 
 ![](https://pic3.zhimg.com/80/v2-9616f2599c151ebedf06f78be8e6d766_1440w.webp)
 

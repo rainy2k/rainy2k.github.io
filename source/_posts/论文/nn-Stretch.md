@@ -1,4 +1,4 @@
-```yaml
+---
 title: "NN-Stretch: Automatic Neural Network Branching for Parallel Inference on Heterogeneous Multi-Processors"
 date: 2023-06-01 01:10:00
 tags: 
@@ -6,7 +6,7 @@ tags:
 categories:
 - 科研
 - 论文
-```
+---
 
 **会议：**   MobiSys 2023
 

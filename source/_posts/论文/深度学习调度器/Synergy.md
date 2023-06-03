@@ -1,4 +1,4 @@
-```yaml
+---
 title: "Synergy: Looking Beyond GPUs for DNN Scheduling on Multi-Tenant Clusters"
 date: 2023-06-01 16:22:00
 tags: 
@@ -7,7 +7,7 @@ tags:
 categories:
 - 科研
 - 论文
-```
+---
 
 ## **Looking Beyond GPUs for DNN Scheduling on Multi-Tenant Clusters**
 
