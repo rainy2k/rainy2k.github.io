@@ -6,15 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Abstract">
+    <meta name="description" content="动机 “However, commodity GPUs lack efficient preemptive scheduling support and state-of-the-art approaches either have to monopolize GPU or let the realtime tasks to wait for best-effort tasks to comple">
 <meta property="og:type" content="article">
 <meta property="og:title" content="REEF 论文笔记">
 <meta property="og:url" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/REEF/index.html">
 <meta property="og:site_name" content="Rainy2k">
-<meta property="og:description" content="Abstract">
+<meta property="og:description" content="动机 “However, commodity GPUs lack efficient preemptive scheduling support and state-of-the-art approaches either have to monopolize GPU or let the realtime tasks to wait for best-effort tasks to comple">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-04-25T06:01:00.000Z">
-<meta property="article:modified_time" content="2023-04-25T08:31:09.927Z">
+<meta property="article:modified_time" content="2023-06-03T16:46:01.267Z">
 <meta property="article:author" content="Rainy2k">
 <meta property="article:tag" content="MLSys">
 <meta name="twitter:card" content="summary">
@@ -93,6 +93,8 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" aria-label="Previous post" href="/%E5%AD%A6%E4%B9%A0/unity/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" aria-label="Next post" href="/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
@@ -122,7 +124,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract"><span class="toc-number">1.</span> <span class="toc-text">Abstract</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA"><span class="toc-number">1.</span> <span class="toc-text">动机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reef"><span class="toc-number">2.</span> <span class="toc-text">REEF</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A2%E5%8D%A0"><span class="toc-number">2.1.</span> <span class="toc-text">抢占</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E5%A1%AB%E5%85%85"><span class="toc-number">2.2.</span> <span class="toc-text">内核填充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">2.3.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#key-insight"><span class="toc-number">2.4.</span> <span class="toc-text">Key Insight</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#implementaion"><span class="toc-number">2.5.</span> <span class="toc-text">Implementaion</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -167,10 +169,10 @@
 
 
       <span class="post-count">
-        | 共1字
+        | 共744字
         </span>
         <span class="post-count">
-        | 预计1分钟
+        | 预计3分钟
         </span>
         <span id="busuanzi_container_page_pv">
         | 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
@@ -180,7 +182,29 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h2 id="abstract">Abstract</h2>
+    <h2 id="动机">动机</h2>
+<p>“However, commodity GPUs lack efficient preemptive scheduling support and state-of-the-art approaches either have to monopolize GPU or let the realtime tasks to wait for best-effort tasks to complete, which causes low utilization or high latency, or both.”</p>
+<p>商业 GPU 缺乏有效的抢占式调度支持，最先进的方法要么必须独占 GPU，要么让实时任务等待尽力而为的任务完成，这会导致低利用率或高延迟，或两者兼而有之。</p>
+<p>通常，DNN 推理有两个可能相互冲突的 GPU 调度目标。</p>
+<p>首先，实时任务应该被视为 GPU 上的“first-class citizens” ，不受其他任务的干扰，以实现低端到端延迟。</p>
+<p>其次，实时任务和best-effort的任务都应该在 GPU 上同时提供服务，以实现高整体吞吐量（工作守恒work-conserving.）。</p>
+<h2 id="reef">REEF</h2>
+<p>“REEF, the first GPU-accelerated DNN inference serving system that enables microsecond-scale kernel preemption and controlled concurrent execution in GPU scheduling.”</p>
+<p>REEF，第一个 GPU 加速的 DNN 推理服务系统，可在 GPU 调度中实现微秒级内核抢占和受控并发执行。</p>
+<h3 id="抢占">抢占</h3>
+<p>“First, based on the observation that DNN inference kernels as mostly idempotent, REEF devises a reset-based preemption scheme that launches a real-time kernel on the GPU by proactively killing and restoring best-effort kernels at microsecond-scale”</p>
+<p>首先，基于对 DNN 推理内核大多是幂等的观察，REEF 设计了一种基于重置的抢占方案，通过在微秒级主动杀死和恢复best-effort的内核，在 GPU 上启动实时内核</p>
+<h3 id="内核填充">内核填充</h3>
+<p>“Second, since DNN inference kernels have varied parallelism and predictable latency, REEF proposes a dynamic kernel padding mechanism that dynamically pads the real-time kernel with appropriate best-effort kernels to fully utilize the GPU with negligible overhead.” (Han 等, p. 539)</p>
+<p>其次，由于 DNN 推理内核具有不同的并行性和可预测的延迟，REEF 提出了一种动态内核填充机制，该机制使用适当的best-effort内核动态填充实时内核，以充分利用 GPU，开销可忽略不计。</p>
+<h3 id="定义">定义</h3>
+<p>“REEF, the first DNN inference serving system for commodity GPUs with microsecond-scale kernel preemption and controlled concurrent execution in GPU scheduling to achieve both real time and work conserving”</p>
+<p>REEF，第一个用于商品 GPU 的 DNN 推理服务系统，具有微秒级内核抢占和 GPU 调度中的受控并发执行，以实现实时和工作守恒</p>
+<p>具体来说，到达的实时任务应该立即从正在运行的尽力而为的内核中抢占 GPU，而无需等待它们完成。同时，best-effort的内核应该使用实时内核剩余的 GPU 资源并发执行。</p>
+<h3 id="key-insight">Key Insight</h3>
+<p>REEF 的一个关键见解是 DNN 推理中的每个内核大多是幂等的。这意味着可以在不保存上下文的情况下主动终止和恢复正在运行的尽力而为的内核。</p>
+<h3 id="implementaion">Implementaion</h3>
+<p>“We have implemented REEF by extending Apache TVM [73] (a compiler for deep learning) and AMD ROCm [3] (an open-source GPU computing platform). We evaluate REEF using a new DNN Inference Serving Benchmark (DISB) with diverse workloads and models, as well as a real-world trace from Apollo [7] (an open autonomous driving platform).”</p>
 
   </div>
 </article>
@@ -210,7 +234,7 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#abstract"><span class="toc-number">1.</span> <span class="toc-text">Abstract</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA"><span class="toc-number">1.</span> <span class="toc-text">动机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#reef"><span class="toc-number">2.</span> <span class="toc-text">REEF</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%A2%E5%8D%A0"><span class="toc-number">2.1.</span> <span class="toc-text">抢占</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E5%A1%AB%E5%85%85"><span class="toc-number">2.2.</span> <span class="toc-text">内核填充</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">2.3.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#key-insight"><span class="toc-number">2.4.</span> <span class="toc-text">Key Insight</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#implementaion"><span class="toc-number">2.5.</span> <span class="toc-text">Implementaion</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">

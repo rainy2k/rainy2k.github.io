@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="OSDI‘21 之前的大多数工作都需要用户预先指定每个 Training Job 所需要集群资源或者自动为每个 Job 静态分配集群资源，本项工作提出了调度器 Pollux，根据每个 Job 当前运行的状态动态调整它们的资源（例如 GPU 的数量）以及它们的训练参数（例如 learning rate 以及 batch size）来最大化整个集群的资源利用效率。 Distributed DL Tra">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning">
+<meta property="og:url" content="https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/index.html">
+<meta property="og:site_name" content="Rainy2k">
+<meta property="og:description" content="OSDI‘21 之前的大多数工作都需要用户预先指定每个 Training Job 所需要集群资源或者自动为每个 Job 静态分配集群资源，本项工作提出了调度器 Pollux，根据每个 Job 当前运行的状态动态调整它们的资源（例如 GPU 的数量）以及它们的训练参数（例如 learning rate 以及 batch size）来最大化整个集群的资源利用效率。 Distributed DL Tra">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-5c0c90b7c963a43328dfc38ced1f428f_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f21d78948649474def65e87b497fe09a_1440w.webp">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-a77b63fac9a69cd0889d02ea1c4d538f_1440w.webp">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-f64437f539d72af15416a5a0ae83475b_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-9616f2599c151ebedf06f78be8e6d766_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-38d8d1fcfd88ee57d651007d674af0a2_1440w.webp">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-6a38f49877fc828e7598013e28751753_1440w.webp">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4ccc0c78b9286fb6a539c9931971595e_1440w.webp">
+<meta property="article:published_time" content="2023-06-01T08:21:00.000Z">
+<meta property="article:modified_time" content="2023-06-03T16:46:01.271Z">
+<meta property="article:author" content="Rainy2k">
+<meta property="article:tag" content="MLSys">
+<meta property="article:tag" content="深度学习调度">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-5c0c90b7c963a43328dfc38ced1f428f_1440w.webp">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/my.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/my.ico" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/my.ico">
+        
+      
+    
+    <!-- title -->
+    <title>Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Synergy/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/%E8%AE%BA%E6%96%87/nn-Stretch/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&text=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&is_video=false&description=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning&body=Check out this article: https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&name=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&t=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Rainy2k</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-06-01T08:21:00.000Z" itemprop="datePublished">2023-06-01</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%A7%91%E7%A0%94/">科研</a> › <a class="category-link" href="/categories/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87/">论文</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/MLSys/" rel="tag">MLSys</a>, <a class="tag-link-link" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6/" rel="tag">深度学习调度</a>
+    </div>
+
+
+      <span class="post-count">
+        | 共1k字
+        </span>
+        <span class="post-count">
+        | 预计3分钟
+        </span>
+        <span id="busuanzi_container_page_pv">
+        | 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </span>
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>OSDI‘21</p>
+<p>之前的大多数工作都需要用户预先指定每个 Training Job 所需要集群资源或者自动为每个 Job 静态分配集群资源，本项工作提出了调度器 Pollux，根据<strong>每个 Job 当前运行的状态动态调整它们的资源</strong>（例如 GPU 的数量）以及它们的<strong>训练参数</strong>（例如 learning rate 以及 batch size）来最大化整个集群的资源利用效率。</p>
+<p><strong>Distributed DL Training</strong></p>
+<p>这里介绍本文考虑的两个核心的 Metric：<strong>System Throughput</strong> 以及 <strong>Statistical Efficiency</strong>。</p>
+<p>System Throughput 的定义为单位时间所训练的样本数量，这里考虑主要的影响因素：</p>
+<ol type="1">
+<li><strong>分配的资源（例如 GPU），资源越多 throughput 越高。</strong></li>
+<li>batch size 的大小，<strong>batch size 越大，throughput 越高。这主要因为大 batch size 的计算时间长</strong>，可以减少分布式训练中 <mark>synchronization</mark> 时间的占比。
+<ul>
+<li>synchronization 同步</li>
+</ul></li>
+</ol>
+<p>因此，在不更换训练算法的前提下，增加计算资源以及提高 batch size 可以有效地提高 throughput。</p>
+<p><u>Statistical Efficiency 的定义为每个训练的样本对整个训练过程的贡献度</u>，这里也主要考虑两个影响因素：</p>
+<ol type="1">
+<li>batch size 的大小。一般地，batch size 越大，statistical efficiency 越低；<u>但在不同的训练阶段，batch size 对 statistical efficiency 的影响程度也不同，例如在训练初期的影响较大，而在后期影响较小。</u></li>
+<li>learning rate。一般地，learning rate 越大，statistical efficiency 越高。</li>
+</ol>
+<p>因此，增大 batch size 反而会降低 statistical efficiency。</p>
+<p>如下图，对于 batch size 的调整需要综合考虑 throughput 和 statistical efficiency。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-5c0c90b7c963a43328dfc38ced1f428f_1440w.webp"></p>
+<p><strong>Key Idea: Goodput，not Throughput</strong></p>
+<p>本文核心的 idea 就是用一个新的指标：Goodput 来指导对集群资源的调度。</p>
+<p><strong>Goodput 综合考虑了 throughput 和 efficiency</strong>，下图给出了本文对 Goodput 的定义。本项工作就是通过调整 a, m, s 三个参数来最大化 Goodput。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-f21d78948649474def65e87b497fe09a_1440w.webp"></p>
+<p><strong>Modeling System Throughput</strong></p>
+<p>为了最优化 Goodput，需要对 Throughput 和 Efficiency 两个指标进行建模并做实时的评估。下面简单介绍本文对两个指标的建模方式。</p>
+<p>对于 Throughput，根据定义，可以通过计算 batch size / 计算每个 iteration 的时间： <span class="math inline">\(THROUGHPUT(a,m,s) = M(a,m,s)/T_{iter}(a,m,s)\)</span></p>
+<p>而其中 T_{iter} 可以通过以下方式来计算：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-a77b63fac9a69cd0889d02ea1c4d538f_1440w.webp"></p>
+<p>下图给出了验证上述模型准确性的测试，可以看出这个模型基本上可以很准确地对 Throughput 进行评估。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-f64437f539d72af15416a5a0ae83475b_1440w.webp"></p>
+<p><strong>Modeling Statistical Efficiency</strong></p>
+<p>Pollux 将 Efficiency 建模为 <span class="math inline">\(EFFICIENCY_t(M_0)\)</span> 的相对值，并且在调整 batch size 的过程中只考虑 <span class="math inline">\(M \ge M_0\)</span>，因此 Efficiency 的取值范围是 (0, 1]，例如如果某个时刻采用 batch size 为 M 时的 Efficiency 是 E，表达的含义是需要用 1/E 的样本来训练才能够达到初始 batch size <span class="math inline">\(M_0\)</span> 用一个样本所能够达到的 progress。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-9616f2599c151ebedf06f78be8e6d766_1440w.webp"></p>
+<p><strong>Pollux Architecture</strong></p>
+<p>Pollux 是一个深度学习训练任务调度器，负责在一个集群中为每个 DL Job 分配资源，并且调整他们的 batch size 以及 learning rate 来提高 Goodput。</p>
+<p>Pollux 主要包含两个组件，全局的 PolluxSched，以及 per Job 的 PolluxAgent。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-38d8d1fcfd88ee57d651007d674af0a2_1440w.webp"></p>
+<p>PolluxAgent 负责收集当前 Job 的 efficiency 和 throughput，并实时地调整 batch size 以最大化 Goodput，且将 Goodput 汇报给 PolluxSched。</p>
+<p>PolluxSched 负责为每个 Job 动态地分配 GPU 资源，PolluxSched 的调度目标是最大化 fitness：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-6a38f49877fc828e7598013e28751753_1440w.webp"></p>
+<p><strong>Evaluation</strong></p>
+<p>作者在 16个节点的集群（每个节点 4 个 T4 GPU）用 8 小时训练了 160 个 DL Job，从下面的表格可以看出，相比其他调度器最优的配置，平均任务完成时间降低了 37% ~ 50%。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-4ccc0c78b9286fb6a539c9931971595e_1440w.webp"></p>
+<p><strong>Conclusion</strong></p>
+<p>本项工作提出的 Pollux 是一个 DL Job 的调度器。Pollux 使用 Goodput 来衡量模型训练的效率，Goodput 同时考虑了 System Throughput 和 Statistical Efficiency；Pollux 并且在 cluster 和 job 两个层次同时对资源的利用进行优化，可以降低 37% - 50% 的平均任务完成时间。</p>
+<p>Pollux 开源地址：<a href="https://link.zhihu.com/?target=https%3A//github.com/petuum/adaptdl">https://github.com/petuum/adapt</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&text=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&is_video=false&description=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning&body=Check out this article: https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&title=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&name=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AE%BA%E6%96%87/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%BA%A6%E5%99%A8/Pollux/&t=Pollux: Co-adaptive Cluster Scheduling for Goodput-Optimized Deep Learning"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Rainy2k
+    
+      <!-- 不蒜子统计 -->
+      <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+      </span>
+      <span class="post-meta-divider">|</span>
+      <span id="busuanzi_container_site_uv" style='display:none'>
+              本站访客数<span id="busuanzi_value_site_uv"></span>人
+      </span>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>
