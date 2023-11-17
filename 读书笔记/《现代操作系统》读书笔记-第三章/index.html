@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="第3章 操作系统结构 操作系统的设计 为了降低操作系统设计的复杂度，需要遵循的设计原则：策略与机制分离。 如调度过程中：  策略：FCFS，RR等 机制：调度队列的设计、调度实体的表示、调度的中断处理等  管理复杂系统的重要方法：M.A.L.H方法  模块化 (modularity)  模块的划分需要考虑高内聚和低耦合，使其具有独立性。  抽象 (abstraction)  在模块化的基础上，将接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《现代操作系统》读书笔记-第三章-操作系统结构">
+<meta property="og:url" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/index.html">
+<meta property="og:site_name" content="Rainy2k">
+<meta property="og:description" content="第3章 操作系统结构 操作系统的设计 为了降低操作系统设计的复杂度，需要遵循的设计原则：策略与机制分离。 如调度过程中：  策略：FCFS，RR等 机制：调度队列的设计、调度实体的表示、调度的中断处理等  管理复杂系统的重要方法：M.A.L.H方法  模块化 (modularity)  模块的划分需要考虑高内聚和低耦合，使其具有独立性。  抽象 (abstraction)  在模块化的基础上，将接">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225405862.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225436573.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225752831.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230318235018986.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230319221359326.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230319221250154.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320083330806.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320083429566.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320090630108.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320093914364.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320095142768.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320100202248.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320100340301.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320103806407.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320102034662.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320102518338.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230324155201666.png">
+<meta property="article:published_time" content="2023-03-21T07:57:38.000Z">
+<meta property="article:modified_time" content="2023-11-17T06:27:00.927Z">
+<meta property="article:author" content="Rainy2k">
+<meta property="article:tag" content="OS">
+<meta property="article:tag" content="Reading Notes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225405862.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/my.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/my.ico" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/my.ico">
+        
+      
+    
+    <!-- title -->
+    <title>《现代操作系统》读书笔记-第三章-操作系统结构</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%80%E7%AB%A0/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&text=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&is_video=false&description=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《现代操作系统》读书笔记-第三章-操作系统结构&body=Check out this article: https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&name=《现代操作系统》读书笔记-第三章-操作系统结构&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&t=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC3%E7%AB%A0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">第3章 操作系统结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.</span> <span class="toc-text">操作系统的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">操作系统内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">简要结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8F%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.2.</span> <span class="toc-text">宏内核架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.3.</span> <span class="toc-text">微内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">第一代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">第二代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">第三代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8-vs-%E5%AE%8F%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">微内核 vs 宏内核</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.4.</span> <span class="toc-text">外核架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E6%A0%B8vs%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.5.</span> <span class="toc-text">外核vs微内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.6.</span> <span class="toc-text">多内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E6%A0%B8%E4%B8%8E%E4%BC%97%E6%A0%B8"><span class="toc-number">1.2.6.1.</span> <span class="toc-text">多核与众核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dennard%E7%BC%A9%E5%BE%AE%E5%AE%9A%E5%BE%8B"><span class="toc-number">1.2.6.2.</span> <span class="toc-text">Dennard缩微定律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#multikernel"><span class="toc-number">1.2.6.3.</span> <span class="toc-text">MultiKernel</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.7.</span> <span class="toc-text">混合内核架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.</span> <span class="toc-text">操作系统框架结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#andriod%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">Andriod系统架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8C%96%E6%9E%B6%E6%9E%84%E4%B8%8Ebinder-ipc"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">服务化架构与Binder IPC</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ros%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.2.</span> <span class="toc-text">ROS系统架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">话题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E5%8F%91%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">数据分发服务</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">思考题</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        《现代操作系统》读书笔记-第三章-操作系统结构
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Rainy2k</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-03-21T07:57:38.000Z" itemprop="datePublished">2023-03-21</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">《现代操作系统》读书笔记</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/OS/" rel="tag">OS</a>, <a class="tag-link-link" href="/tags/Reading-Notes/" rel="tag">Reading Notes</a>
+    </div>
+
+
+      <span class="post-count">
+        | 共3.3k字
+        </span>
+        <span class="post-count">
+        | 预计11分钟
+        </span>
+        <span id="busuanzi_container_page_pv">
+        | 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </span>
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="第3章-操作系统结构">第3章 操作系统结构</h1>
+<h2 id="操作系统的设计">操作系统的设计</h2>
+<p>为了降低操作系统设计的复杂度，需要遵循的设计原则：<strong>策略与机制分离</strong>。</p>
+<p>如调度过程中：</p>
+<ul>
+<li>策略：FCFS，RR等</li>
+<li>机制：调度队列的设计、调度实体的表示、调度的中断处理等</li>
+</ul>
+<p>管理复杂系统的重要方法：<strong>M.A.L.H方法</strong></p>
+<ul>
+<li>模块化 (modularity)
+<ul>
+<li>模块的划分需要考虑高内聚和低耦合，使其具有独立性。</li>
+</ul></li>
+<li>抽象 (abstraction)
+<ul>
+<li>在模块化的基础上，将接口与内部实现分离；</li>
+<li>依从模块间的自然边界，减少模块间的交互；
+<ul>
+<li><strong>减少错误在模块间的传递</strong></li>
+<li><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225405862.png" title="fig:" alt="image-20230316225405862"></li>
+</ul></li>
+<li>e.g. UNIX中，只需要对独立的、连续的虚拟地址空间进行设计，应用程序无需关心物理地址的具体位置。</li>
+<li>e.g. 文件系统中无需关心数据在物理介质(Flash, Disk)中的具体位置，只需要通过定义好的文件系统接口(open, read, write)操作。
+<ul>
+<li>really？</li>
+</ul></li>
+</ul></li>
+<li><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225436573.png" alt="image-20230316225436573" style="zoom:50%;"></li>
+<li>分层 (layering)
+<ul>
+<li>通常的原则是：一个模块只能和同层模块以及相邻的上层或下层模块进行交互.</li>
+<li>分层也是构建复杂系统的一个重要的方式：确定层级后，我们可以先构建底层的模块，然后利用底层模块提供的功能与服务进一步构建上层的模块。</li>
+</ul></li>
+<li>层级 (hierachy)
+<ul>
+<li>首先将一些功能相近的模块组成一个具有清晰接口的自包含子系统，然后再将这些子系统递归地组成一个具有清晰接口的更大子系统。</li>
+</ul></li>
+</ul>
+<h2 id="操作系统内核架构">操作系统内核架构</h2>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230316225752831.png" alt="image-20230316225752831" style="zoom:67%;"></p>
+<h3 id="简要结构">简要结构</h3>
+<p>简要结构，将应用程序和操作系统放在同一个地址空间，无需底层硬件提供复杂的内存管理、特权级隔离等功能。</p>
+<p>MS-DOS(MicroSoft Disk Operating System)内部结构：</p>
+<ul>
+<li>MSDOS.Sys模块：通过命令行接口与用户交互，负责与设备驱动交互以实现对硬件设备的控制</li>
+<li>IO.Sys：IO子系统实现对硬件设备I/O访问的管理，以I/O请求作为抽象为MSDOS.Sys和驱动设备I/O提供服务</li>
+</ul>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230318235018986.png" alt="image-20230318235018986" style="zoom:50%;"></p>
+<p>FreeRTOS和uCOS等也采用简要结构。</p>
+<ul>
+<li>主要运行在微控制单元(MicroController Unit, MCU)等相对简单的硬件上
+<ul>
+<li>没有提供现代意义上的内存管理单元(Memory Management Unit)</li>
+</ul></li>
+<li>隔离能力较弱或缺失</li>
+</ul>
+<h3 id="宏内核架构">宏内核架构</h3>
+<p>宏内核(Monolithic Kernel)又称单内核。</p>
+<p>特征：操作系统内核的所有模块均在内核态。具备直接操作硬件的能力。</p>
+<blockquote>
+<p>模块：包括进程调度、内存管理、文件系统、设备驱动等。</p>
+</blockquote>
+<p>UNIX/Linux, FreeBSD采用宏内核架构。</p>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230319221359326.png" alt="image-20230319221359326" style="zoom: 67%;"></p>
+<p>宏内核架构中的M.A.L.H:</p>
+<ol type="1">
+<li>模块化
+<ol type="1">
+<li>UNIX/Linux, Windows内核均采用模块化</li>
+<li>提供了可加载内核模块(Loadable Kernel Module, LKM)机制。
+<ol type="1">
+<li>例如当前大部分设备驱动是以可加载模块的形式存在的，与内核其他模块解耦。</li>
+</ol></li>
+</ol></li>
+<li>抽象
+<ol type="1">
+<li>UNIX将文件作为一个重要的抽象,everything is a file</li>
+</ol></li>
+<li>分层
+<ol type="1">
+<li><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230319221250154.png" alt="image-20230319221250154" style="zoom:67%;"></li>
+</ol></li>
+<li>层级
+<ol type="1">
+<li>调度子系统中对优先级的分类</li>
+<li>控制组(cgroup)对进程层级的分类</li>
+<li>内存分配器对不同内存的分类</li>
+</ol></li>
+</ol>
+<h3 id="微内核架构">微内核架构</h3>
+<p>根据Andrew Tanenbaum等人的论文中提到，一般工业界系统中每千行代码大约有6～16个缺陷。</p>
+<p>并且，宏内核架构下，所有内核模块均运行在特权空间，一个单点错误就可能导致整个系统的崩溃。</p>
+<p>微内核架构：内核仅保留极少的功能，为这些服务提供通信等基础功能，使其能够互相协作以完成操作系统所必须的功能。</p>
+<blockquote>
+<p>最早的微内核操作系统：</p>
+<p>1969年，Per Brinch Hansen开发的RC 4000，首次提出了分离机制与策略的原则和管程这个概念。</p>
+</blockquote>
+<h4 id="第一代微内核">第一代微内核</h4>
+<blockquote>
+<p>Mach是第一代微内核的代表。</p>
+<p>缺点：</p>
+<p>Mach对进程间通信(Inter-Process Communication, IPC)的设计过于通用</p>
+<p>Mach微内核自身资源(CPU, CPU缓存等)占用过大。</p>
+</blockquote>
+<h4 id="第二代微内核">第二代微内核</h4>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320083330806.png" alt><figcaption>image-20230320083330806</figcaption>
+</figure>
+<p>高性能的IPC实现。</p>
+<p>极小化的微核。</p>
+<h4 id="第三代微内核">第三代微内核</h4>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320083429566.png" alt="image-20230320083429566" style="zoom:67%;"></p>
+<h4 id="微内核-vs-宏内核">微内核 vs 宏内核</h4>
+<ul>
+<li>弹性扩展能力：宏内核很难通过简单的裁剪或扩展，使其支持资源诉求从KB到TB级别的场景。</li>
+<li>硬件异构性：异构硬件往往需要一些定制化的方式来解决特定问题，这种定制化对于宏内核来说很难得到长期的支持。</li>
+<li>功能安全：由于宏内核在故障隔离和时延控制等方面的缺陷，截至目前尚无通过高等级功能安全认证（例如，汽车行业的 ASIL-D）的先例。</li>
+<li>﻿信息安全：宏内核架构的操作系统存在较大的信息安全隐患，如内核态驱动容易造成低质量的驱动代码入侵内核，粗粒度权限管理容易带来权限漏洞。
+<ul>
+<li>如何入侵内核？Memory Leak？</li>
+</ul></li>
+<li>确定性时延：由于宏内核架构资深隔离较为困难，且各模块耦合度高导致难以控制系統调用的时延，因此较难做到确定性时延；即便为时延做一些特定优化（例如Linux-RT补丁，时延抖动仍然较大）。</li>
+<li>Linux近期逐步采用了一些用户态驱动模型(UIO,VFIO等)</li>
+<li>Andriod在Treble项目中同样将部分驱动放入了用户态，并通过名为Binder的IPC机制来与这些驱动进行互动。</li>
+</ul>
+<hr>
+<h3 id="外核架构">外核架构</h3>
+<p>操作系统内核在硬件管理方面的两个主要功能是资源抽象与多路复用 (multiplexing)</p>
+<p>对硬件资源抽象存在的问题：</p>
+<ol type="1">
+<li>过度的硬件资源抽象可能会带来较大的性能损失，违反“抽象但不隐藏能力”(abstract but don't hide power)原则</li>
+<li>操作系统所提供的硬件资源是针对所有应用的通用抽象。这些抽象对一些具体的应用(如数据库，Web服务器等)往往不是最优选择。</li>
+</ol>
+<p>在许多场景，应用比操作系统更了解应该如何去抽象和使用硬件资源。应当由应用来尽可能控制对硬件资源的抽象。</p>
+<p><strong>LibOS</strong>，将对硬件的抽象封装到LibOS中(将硬件资源的抽象模块化为一系列的库，LibOS)，与应用直接链接，降低应用开发的复杂度。</p>
+<p>操作系统内核只负责对硬件资源在多个库操作系统之间的<strong>多路复用</strong>的支持，并管理这些LibOS的生命周期。</p>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320090630108.png" alt="image-20230320090630108" style="zoom:50%;"></p>
+<p>优点</p>
+<blockquote>
+<ol type="1">
+<li>﻿﻿﻿可按照应用领域的特点与需求，动态组装成最适合该应用领域的LibOS，最小化非必要的代码，从而获得更高的性能；</li>
+<li>﻿﻿处于硬件特权级的操作系统内核可以做到非常小，并且由于多个LibOS之间的强隔离性；从而可以提升整个计算机系统的安全性与可靠性。</li>
+</ol>
+</blockquote>
+<p>应用</p>
+<blockquote>
+<ol type="1">
+<li>一些功能受限、对操作系统接口要求不高但对性能和时延特别敏感的嵌入式场景。
+<ol type="1">
+<li>将数据面与控制面分离。</li>
+<li>数据面：（data plane）负责数据的处理与转发</li>
+<li>控制面：（control plane）负责设备的管理和配置</li>
+</ol></li>
+<li>当前云计算平台的容器（container）架构很多都采用了脱胎于外核架构的 Unikernel（本质上是一个 Libos)，通过将虚拟机监控器作为支撑 Unikernel/Libos 运行的内核，从而支持对高性能业务的独立部署。</li>
+</ol>
+</blockquote>
+<p>劣势</p>
+<blockquote>
+<p>LibOS通常为某种应用定制，缺乏跨场景的通用性，应用生态差。</p>
+<ul>
+<li>难以用于功能要求复杂、生态和接口丰富的场景。</li>
+<li>LibOS需要做得过于复杂，相当于一个完整的宏内核。</li>
+<li>丧失了外核架构带来的性能、安全优势。</li>
+<li>LibOS通常会实现相同、类似的功能</li>
+<li>代码冗余</li>
+<li>因此对于资源受限的场景
+<ul>
+<li>通常需要一些跨地址空间的代码去重</li>
+<li>或共享机制来减少内存开销</li>
+</ul></li>
+</ul>
+</blockquote>
+<h3 id="外核vs微内核">外核vs微内核</h3>
+<p>硬件资源抽象</p>
+<ol type="1">
+<li>外核架构中，将多个硬件资源分为一个个切片，每个切片中保护的多个硬件资源由LibOS管理，并直接服务于一个应用。
+<ol type="1">
+<li>应用：指为了完成某个功能的应用集合。</li>
+</ol></li>
+<li>微内核架构中，通过让一个操作系统模块独立运行在一个地址空间，来管理一个具体的硬件资源，微操作系统中所有的应用服务。</li>
+</ol>
+<p>内核管理</p>
+<ol type="1">
+<li>外核架构中，运行在特权级的内核主要为LibOS提供硬件的多路复用能力，并管理LibOS</li>
+<li>微内核架构中，内核主要提供进程间通信（IPC）功能</li>
+</ol>
+<p>场景</p>
+<ol type="1">
+<li>外核架构在面向一个功能与生态受限的场景时可通过定制化LibOs获得非常高的性能</li>
+<li>微内核架构则需要更复杂的优化才能获得与之类似的性能。</li>
+</ol>
+<h3 id="多内核架构">多内核架构</h3>
+<h4 id="多核与众核">多核与众核</h4>
+<p>一般认为8个及以下处理器核为多核，多于8个处理器核称为众核。</p>
+<h4 id="dennard缩微定律">Dennard缩微定律</h4>
+<blockquote>
+<p>随着晶体管变得越来越小，它们的功率密度保持不变，从而使功率使用与面积成比例。</p>
+<p>此定律已终结。why？</p>
+</blockquote>
+<h4 id="multikernel">MultiKernel</h4>
+<ul>
+<li><p>将一个众核系统看成一个由多个独立处理器核通过网络互联而成的分布式系统。</p></li>
+<li><p>与传统操作系统类似，假设硬件处理器提供全局共享内存的语义。</p></li>
+<li><p>不同处理核之间的交互，提供了一层基于进程间通信的抽象。</p>
+<ul>
+<li>避免了处理器核之间通过共享内存进行隐式的共享。
+<ul>
+<li>避免了传统OS中，复杂的隐式共享所带来的性能可扩展性瓶颈。</li>
+</ul></li>
+</ul></li>
+<li><p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320093914364.png" alt="image-20230320093914364" style="zoom:50%;"></p></li>
+<li><p>每个CPU核上运行一个独立的OS node</p>
+<ul>
+<li>节点之间的交互由OS node之间的IPC完成。</li>
+<li>OS node是独立的，并且可以是不同的，很容易支持异构处理器架构。</li>
+<li>但是，不同的OS node之间存在状态冗余，对资源开销会造成一定的压力。</li>
+<li>上层应用必须使用MultiKernel提供的进程间通信接口才能交互，绝对性能方面不一定存在优势，且需要移植现有应用才能适应MultiKernel架构。
+<ul>
+<li>是否存在平滑迁移的方法？比如接受原本的接口，直接转换为MultiKernel的接口？？</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320095142768.png" alt="image-20230320095142768" style="zoom:50%;"></p>
+<h3 id="混合内核架构">混合内核架构</h3>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320100202248.png" alt="image-20230320100202248" style="zoom:50%;"></p>
+<h2 id="操作系统框架结构">操作系统框架结构</h2>
+<h3 id="andriod系统架构">Andriod系统架构</h3>
+<p>Apache Software License，商用友好</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320100340301.png" alt><figcaption>image-20230320100340301</figcaption>
+</figure>
+<ol type="1">
+<li>硬件抽象层
+<ol type="1">
+<li>在Linux内核上提供一层硬件抽象层的原因
+<ol type="1">
+<li>设备驱动运行在Linux内核态，因此设备驱动接口依赖于Linux内核设备驱动接口的演进
+<ol type="1">
+<li>会阻碍安卓系统的独立演进和升级</li>
+</ol></li>
+<li>Linux内核采用GPLv2开源协议，要求运行在同一地址空间的设备驱动必须开源，这会导致一些硬件的实现细节也被公开。</li>
+</ol></li>
+<li>硬件抽象层，封装了一些硬件的细节，解耦Linux内核和Android系统</li>
+<li>通过提供用户态驱动模型，使得设备厂商不需要开放源码就能为Andriod操作系统提供设备驱动。</li>
+</ol></li>
+<li>Android运行环境
+<ol type="1">
+<li>andriod主要使用java进行开发，需要一个运行时环境，将应用从字节码转化为可执行代码。</li>
+<li>早期的Android采用 Dalvik 虚拟机的形式，通过解释执行与 JIT ( Just in-Time）编译的方式运行，因而带来一些性能与功耗的损失。</li>
+<li>5.0后引入了ART，通过Ahead-of-Time(AOT)预先编译的方式，将java代码预编译为二进制可执行代码，从而避免运行时的编译开销。</li>
+</ol></li>
+<li>Android应用架构
+<ol type="1">
+<li>包括服务管理、活动管理、包管理、窗口管理等。</li>
+</ol></li>
+</ol>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320103806407.png" alt="image-20230320103806407" style="zoom:50%;"></p>
+<h4 id="服务化架构与binder-ipc">服务化架构与Binder IPC</h4>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320102034662.png" alt="image-20230320102034662" style="zoom:50%;"></p>
+<h3 id="ros系统架构">ROS系统架构</h3>
+<p>Robot Operating System</p>
+<p><img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230320102518338.png" alt="image-20230320102518338" style="zoom:50%;"></p>
+<p>基础设施层的运行环境指Python、C++等运行环境。</p>
+<p>ROS应用层是由一个个节点构成的计算图。</p>
+<h4 id="话题">话题</h4>
+<p>单向的异步通信机制。</p>
+<p>发布者在主节点注册一个话题，发布者以消息的形式发布关于该话题的新内容。</p>
+<p>订阅者通过主节点获得对应话题的发布者发布的信息。</p>
+<h4 id="数据分发服务">数据分发服务</h4>
+<p>用数据分发服务(Data Distribution Service, DDS)支持实时性。</p>
+<p>DDS被看作一个系统中间件。在ROS应用层和ROS基础设施层之间。</p>
+<p>将DDS分离出来，是为了将对性能有重要影响的通信进行加速。</p>
+<p>在DDS的基础上，实现一套分布式发现系统(Distributed Discovery System)，避免在主节点上出现性能瓶颈。</p>
+<h2 id="思考题">思考题</h2>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/image-20230324155201666.png" alt><figcaption>image-20230324155201666</figcaption>
+</figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC3%E7%AB%A0-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">第3章 操作系统结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.</span> <span class="toc-text">操作系统的设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">操作系统内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%A6%81%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">简要结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8F%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.2.</span> <span class="toc-text">宏内核架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.3.</span> <span class="toc-text">微内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">第一代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">第二代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E4%BB%A3%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">第三代微内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BE%AE%E5%86%85%E6%A0%B8-vs-%E5%AE%8F%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">微内核 vs 宏内核</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.4.</span> <span class="toc-text">外核架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E6%A0%B8vs%E5%BE%AE%E5%86%85%E6%A0%B8"><span class="toc-number">1.2.5.</span> <span class="toc-text">外核vs微内核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.6.</span> <span class="toc-text">多内核架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%9A%E6%A0%B8%E4%B8%8E%E4%BC%97%E6%A0%B8"><span class="toc-number">1.2.6.1.</span> <span class="toc-text">多核与众核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#dennard%E7%BC%A9%E5%BE%AE%E5%AE%9A%E5%BE%8B"><span class="toc-number">1.2.6.2.</span> <span class="toc-text">Dennard缩微定律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#multikernel"><span class="toc-number">1.2.6.3.</span> <span class="toc-text">MultiKernel</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="toc-number">1.2.7.</span> <span class="toc-text">混合内核架构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84"><span class="toc-number">1.3.</span> <span class="toc-text">操作系统框架结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#andriod%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.1.</span> <span class="toc-text">Andriod系统架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8C%96%E6%9E%B6%E6%9E%84%E4%B8%8Ebinder-ipc"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">服务化架构与Binder IPC</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ros%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="toc-number">1.3.2.</span> <span class="toc-text">ROS系统架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">话题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E5%8F%91%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">数据分发服务</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">思考题</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&text=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&is_video=false&description=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《现代操作系统》读书笔记-第三章-操作系统结构&body=Check out this article: https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&title=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&name=《现代操作系统》读书笔记-第三章-操作系统结构&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/&t=《现代操作系统》读书笔记-第三章-操作系统结构"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Rainy2k
+    
+      <!-- 不蒜子统计 -->
+      <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+      </span>
+      <span class="post-meta-divider">|</span>
+      <span id="busuanzi_container_site_uv" style='display:none'>
+              本站访客数<span id="busuanzi_value_site_uv"></span>人
+      </span>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

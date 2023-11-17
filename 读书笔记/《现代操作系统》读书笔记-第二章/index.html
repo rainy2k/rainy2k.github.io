@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="第2章 硬件结构 指令集——AArch64 AArch64 属于 RISC AArch64 每条指令的长度固定为 4 字节，指令类型包括：  数据搬移指令：如 mov 寄存器计算指令：如 add, sub 内存读写指令：如内存加载 ldr, 内存写入 str 跳转指令：如无条件跳转 b 过程调用指令：调用指令 bl, 返回指令 ret 特权指令：读取系统寄存器指令 msr, 写入系统寄存器指令 m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《现代操作系统》读书笔记-第二章-硬件结构">
+<meta property="og:url" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/index.html">
+<meta property="og:site_name" content="Rainy2k">
+<meta property="og:description" content="第2章 硬件结构 指令集——AArch64 AArch64 属于 RISC AArch64 每条指令的长度固定为 4 字节，指令类型包括：  数据搬移指令：如 mov 寄存器计算指令：如 add, sub 内存读写指令：如内存加载 ldr, 内存写入 str 跳转指令：如无条件跳转 b 过程调用指令：调用指令 bl, 返回指令 ret 特权指令：读取系统寄存器指令 msr, 写入系统寄存器指令 m">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316202327641.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316203250849.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316210212825.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211308693.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211809749.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211822940.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316221914560.png">
+<meta property="og:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316222847093.png">
+<meta property="article:published_time" content="2023-03-21T07:57:38.000Z">
+<meta property="article:modified_time" content="2023-11-17T06:27:00.995Z">
+<meta property="article:author" content="Rainy2k">
+<meta property="article:tag" content="OS">
+<meta property="article:tag" content="Reading Notes">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316202327641.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/my.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/my.ico" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/my.ico">
+        
+      
+    
+    <!-- title -->
+    <title>《现代操作系统》读书笔记-第二章-硬件结构</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
+</head>
+
+<body class="max-width mx-auto px3 ltr">    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%B8%89%E7%AB%A0/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E5%9B%9B%E7%AB%A0/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&text=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&is_video=false&description=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《现代操作系统》读书笔记-第二章-硬件结构&body=Check out this article: https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&name=《现代操作系统》读书笔记-第二章-硬件结构&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&t=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC2%E7%AB%A0-%E7%A1%AC%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">第2章 硬件结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86aarch64"><span class="toc-number">1.1.</span> <span class="toc-text">指令集——AArch64</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%9D%83%E7%BA%A7"><span class="toc-number">1.2.</span> <span class="toc-text">特权级</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#el0%E5%88%87%E6%8D%A2%E5%88%B0el1%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.1.</span> <span class="toc-text">EL0切换到EL1的场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.3.</span> <span class="toc-text">寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E4%B8%8Ecpu%E7%BC%93%E5%AD%98"><span class="toc-number">1.4.</span> <span class="toc-text">物理内存与CPU缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">缓存结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="toc-number">1.4.2.</span> <span class="toc-text">缓存寻址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E4%B8%8E%E4%B8%AD%E6%96%AD"><span class="toc-number">1.5.</span> <span class="toc-text">设备与中断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">1.5.1.</span> <span class="toc-text">内存映射输入输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AE%E8%AF%A2%E4%B8%8E%E4%B8%AD%E6%96%AD"><span class="toc-number">1.5.2.</span> <span class="toc-text">轮询与中断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="toc-number">1.6.</span> <span class="toc-text">思考题</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        《现代操作系统》读书笔记-第二章-硬件结构
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Rainy2k</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-03-21T07:57:38.000Z" itemprop="datePublished">2023-03-21</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">《现代操作系统》读书笔记</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link-link" href="/tags/OS/" rel="tag">OS</a>, <a class="tag-link-link" href="/tags/Reading-Notes/" rel="tag">Reading Notes</a>
+    </div>
+
+
+      <span class="post-count">
+        | 共1.8k字
+        </span>
+        <span class="post-count">
+        | 预计6分钟
+        </span>
+        <span id="busuanzi_container_page_pv">
+        | 本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+        </span>
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="第2章-硬件结构">第2章 硬件结构</h1>
+<h2 id="指令集aarch64">指令集——AArch64</h2>
+<p>AArch64 属于 RISC</p>
+<p>AArch64 每条指令的长度固定为 4 字节，指令类型包括：</p>
+<ul>
+<li>数据搬移指令：如 mov</li>
+<li>寄存器计算指令：如 add, sub</li>
+<li>内存读写指令：如内存加载 ldr, 内存写入 str</li>
+<li>跳转指令：如无条件跳转 b</li>
+<li>过程调用指令：调用指令 bl, 返回指令 ret</li>
+<li>特权指令：读取系统寄存器指令 msr, 写入系统寄存器指令 mrs</li>
+</ul>
+<h2 id="特权级">特权级</h2>
+<p>AArch64的特权级被称为异常级别(Exception Level, EL)</p>
+<ul>
+<li>EL0: 用户态，最低的特权级，应用程序运行在该特权级</li>
+<li>EL1: 内核态，操作系统运行在该特权级</li>
+<li>EL2: 在虚拟化场景下需要，虚拟机监控器 (Virtual Machine Monitor, VMM, 也称为Hypervisor) 通常运行在该特权级。</li>
+<li>EL3: 和安全特性 Trustzone 相关，负责普通世界 (normal world) 和安全世界(secure world)之间的切换。
+<ul>
+<li>Trustzone 是从 ARMv6 体系结构开始引入的安全特性，如今已被广泛使用。该特性从逻辑上将整个系统分为安全世界和普通世界，计算资源可以被划分到这两个世界中。安全世界可以不受限制地访问所有的计算资源，而普通世界不能访问被划分到安全世界的计算资源。比如说，普通世界不能访问属于安全世界的物理内存和设备。</li>
+</ul></li>
+</ul>
+<h3 id="el0切换到el1的场景">EL0切换到EL1的场景</h3>
+<p>同步的 CPU 特权级切换，由 CPU 中执行的指令所导致的：</p>
+<ol type="1">
+<li>应用程序需要调用操作系统提供的系统调用。svc (特权调用, supervisor call)</li>
+<li>应用程序执行的指令触发了异常 (exception)
+<ol type="1">
+<li>如访存指令会出发缺页异常 (page fault)</li>
+</ol></li>
+</ol>
+<p>异步的CPU特权级切换，不是由CPU执行的指令所导致的：</p>
+<ol start="3" type="1">
+<li>应用程序执行的过程中，CPU收到一个来自外设的中断 (interrupt)</li>
+</ol>
+<p>发生特权级切换的时刻，CPU保存当前执行状态，主要包括：</p>
+<table>
+<colgroup>
+<col style="width: 27%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>保存的状态</th>
+<th>保存的位置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>触发异常的指令地址(PC, Program Counter)</td>
+<td>ELR_EL1(异常链接寄存器, Exception Link Register)</td>
+</tr>
+<tr class="even">
+<td>异常原因（即异常是由于svc指令还是由于访存缺页导致的)</td>
+<td>ESR_EL1(异常症状寄存器, Exception Syndrome Register)</td>
+</tr>
+<tr class="odd">
+<td>栈指针(SP, Stack Pointer)</td>
+<td>从SP_EL0(应用程序使用的栈)切换到SP_EL1(操作系统通过这个寄存器配置异常处理过程中使用的栈)</td>
+</tr>
+<tr class="even">
+<td>CPU的相关状态</td>
+<td>SPSR_EL1(已保存的程序状态寄存器, Saved Program Status Register)<br>引发缺页异常的地址保存在FAR_EL1(错误地址寄存器, Fault Address Register)</td>
+</tr>
+</tbody>
+</table>
+<p>操作系统可以在异常向量表中为不同的异常类型配置相应的异常处理函数。因此，当发生特权级切换时，CPU 会读取 VBAR_EL1 (向量基地址寄存器，Vector Base Address Register) 来获得异常向量表 (exception vector table）的基地址，然后根据异常原因(ESR_EL1中保存的内容)调用操作系统设置的相应异常处理函数。</p>
+<p>异常处理完成后，执行eret(异常返回，Exception Return)指令，恢复CPU自动保存的EL0状态，并切回到EL0。</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316202327641.png" alt><figcaption>image-20230316202327641</figcaption>
+</figure>
+<h2 id="寄存器">寄存器</h2>
+<p>AArch64中，有31个64位的通用寄存器，X0～X30。</p>
+<table>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 46%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>寄存器</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>X29</td>
+<td>帧指针(Frame Pointer, FP)寄存器</td>
+<td>保存函数调用过程中栈顶的地址</td>
+</tr>
+<tr class="even">
+<td>X30</td>
+<td>链接指针(Link Pointer, LP)寄存器</td>
+<td>CPU 在执行函数调用指令 bl 时会自动把返回地址保存在其中</td>
+</tr>
+<tr class="odd">
+<td>TTBR0_EL1</td>
+<td>页表基地址寄存器(Translation Table Base Register, TTBR)</td>
+<td>负责翻译虚拟地址空间中不同的地址段, 通常[0, 2^48)</td>
+</tr>
+<tr class="even">
+<td>TTBR1_EL1</td>
+<td>页表基地址寄存器(Translation Table Base Register, TTBR)</td>
+<td>负责翻译虚拟地址空间中不同的地址段, 通常[2^48, 2^64)</td>
+</tr>
+<tr class="odd">
+<td>TCR_EL1</td>
+<td>翻译控制寄存器(Translation Control Register)</td>
+<td>决定页表基地址负责的地址范围</td>
+</tr>
+</tbody>
+</table>
+<p>Q: 一个64位的寄存器是怎么负责翻译的？</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316203250849.png" alt><figcaption>image-20230316203250849</figcaption>
+</figure>
+<h2 id="物理内存与cpu缓存">物理内存与CPU缓存</h2>
+<p>CPU使用物理内存的过程：</p>
+<p>通过总线向物理内存发送一个读写请求，包括目标地址，(如果是写请求，则还包括写入值)。</p>
+<p>物理内存收到请求后，进行读写，(如果是读请求，则返回读取值到CPU)。</p>
+<p><strong>内存访问速度很慢：一次内存访问可能花费上百个时钟周期。</strong></p>
+<p><strong>所以引入了缓存。一般最快只需要几个时钟周期</strong>。</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316210212825.png" alt><figcaption>image-20230316210212825</figcaption>
+</figure>
+<h3 id="缓存结构">缓存结构</h3>
+<p>CPU缓存是由若干个缓存行（cache line）组成的。</p>
+<p>缓存行常见的是 64 字节。</p>
+<p>每个缓存行包括：</p>
+<ul>
+<li>一个有效位(valid bit)，用于表示其是否有效；</li>
+<li>一个标记地址(tag address)，用于标识其对应的物理地址；</li>
+<li>一些其他的状态信息。</li>
+</ul>
+<p>CPU把物理内存中的数据读到CPU缓存，以及把数据写会到物理内存，都是以缓存行(cache line, 64 bytes)为单位的。</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211308693.png" alt><figcaption>image-20230316211308693</figcaption>
+</figure>
+<p>物理地址在逻辑上分为:Tag, Set(组，也称为Index)和Offset三段。</p>
+<p>组(Set)和路(Way)</p>
+<p>物理地址中的Set段能表示最大数目为组。</p>
+<p>例如，如果set段的位数是8，那么对应的 CPU 缓存的组数就是 256 （2^8=256）。</p>
+<p>同一组（即 set 段相等）下，支持的最大Tag数则称为路，即同一组下的缓存行数目。</p>
+<p>图2-6表示的是4路组相联(4-Way Set Associative)。</p>
+<h3 id="缓存寻址">缓存寻址</h3>
+<p>先匹配set，再匹配tag，再看有效位</p>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211809749.png" alt><figcaption>image-20230316211809749</figcaption>
+</figure>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316211822940.png" alt><figcaption>image-20230316211822940</figcaption>
+</figure>
+<h2 id="设备与中断">设备与中断</h2>
+<h3 id="内存映射输入输出">内存映射输入输出</h3>
+<p>内存映射输入输出 (Memory-Mapped I/O, MMIO) 是一种常见的 CPU 控制和访问设备的方式。</p>
+<p><strong>MMIO</strong>的原理是：</p>
+<pre><code>把输人输出设备和物理内存放到同一个地址空间，为设备内部的内存和奇存器也分配相应的地址。
+
+当CPU 通过MMIO 的方式为一个设备分配了地址之后，CPU 可以使用和访问物理内存一样的指令（ldr 和str） 去读写这些属于设备的地址；设备会通过总线监听 CPU 分配给自己的地址，然后完成相应的 CPU 访问请求。
+
+AArch64將 MMIO 作为 CPU 控制和访问设备的重要方式。</code></pre>
+<p>通过 MMIO 方式访问树莓派 Raspberry Pi 3 上的异步收发传输器(Universal Asynchronous Receiver/Transmitter, UART)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 分配给UART中输入输出寄存器的地址</span><br><span class="line">#define UART_IO_ADDR (0x3F215040)</span><br><span class="line"></span><br><span class="line">BEGIN_FUNC(write_addr)</span><br><span class="line">    // 把函数第二个参数(w1)写到第一个参数(x0)表示的地址中</span><br><span class="line">    str w1, [x0]</span><br><span class="line">    ret</span><br><span class="line">END_FUNC(write_addr)</span><br><span class="line"></span><br><span class="line">// 从UART输出的样例: write_addr(UART_TO_ADDR, &#x27;a&#x27;);</span><br><span class="line"></span><br><span class="line">BEGIN_FUNC(read_addr)</span><br><span class="line">    ldr w0, [x0]</span><br><span class="line">    ret</span><br><span class="line">END_FUNC(read_addr)</span><br><span class="line"></span><br><span class="line">// 从UART获取输入的样例: int a = read_addr(UART_TO_ADDR)</span><br></pre></td></tr></table></figure>
+<h3 id="轮询与中断">轮询与中断</h3>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316221914560.png" alt><figcaption>image-20230316221914560</figcaption>
+</figure>
+<p>中断机制，赋予了设备通知CPU的能力。</p>
+<p>操作系统为不同的设备中断配置不同的中断处理函数。</p>
+<p>与异常的处理过程类似。</p>
+<p>中断设备的功能：</p>
+<ul>
+<li><strong>让设备主动通知CPU</strong></li>
+<li><strong>让一个CPU核心通知另一个CPU核心</strong></li>
+</ul>
+<h2 id="思考题">思考题</h2>
+<figure>
+<img src="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/image-20230316222847093.png" alt><figcaption>image-20230316222847093</figcaption>
+</figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/tags/">Tag</a></li>
+         
+          <li><a href="/categories/">categories</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC2%E7%AB%A0-%E7%A1%AC%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">第2章 硬件结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4%E9%9B%86aarch64"><span class="toc-number">1.1.</span> <span class="toc-text">指令集——AArch64</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E6%9D%83%E7%BA%A7"><span class="toc-number">1.2.</span> <span class="toc-text">特权级</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#el0%E5%88%87%E6%8D%A2%E5%88%B0el1%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.1.</span> <span class="toc-text">EL0切换到EL1的场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.3.</span> <span class="toc-text">寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E4%B8%8Ecpu%E7%BC%93%E5%AD%98"><span class="toc-number">1.4.</span> <span class="toc-text">物理内存与CPU缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">缓存结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="toc-number">1.4.2.</span> <span class="toc-text">缓存寻址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E4%B8%8E%E4%B8%AD%E6%96%AD"><span class="toc-number">1.5.</span> <span class="toc-text">设备与中断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-number">1.5.1.</span> <span class="toc-text">内存映射输入输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AE%E8%AF%A2%E4%B8%8E%E4%B8%AD%E6%96%AD"><span class="toc-number">1.5.2.</span> <span class="toc-text">轮询与中断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="toc-number">1.6.</span> <span class="toc-text">思考题</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&text=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&is_video=false&description=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《现代操作系统》读书笔记-第二章-硬件结构&body=Check out this article: https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&title=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&name=《现代操作系统》读书笔记-第二章-硬件结构&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://rainy2k.github.io/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/%E3%80%8A%E7%8E%B0%E4%BB%A3%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E7%AB%A0/&t=《现代操作系统》读书笔记-第二章-硬件结构"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Rainy2k
+    
+      <!-- 不蒜子统计 -->
+      <span id="busuanzi_container_site_pv">
+              本站总访问量<span id="busuanzi_value_site_pv"></span>次
+      </span>
+      <span class="post-meta-divider">|</span>
+      <span id="busuanzi_container_site_uv" style='display:none'>
+              本站访客数<span id="busuanzi_value_site_uv"></span>人
+      </span>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/tags/">Tag</a></li><!--
+     --><!--
+       --><li><a href="/categories/">categories</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
+</html>

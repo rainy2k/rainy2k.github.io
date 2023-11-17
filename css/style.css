@@ -1121,15 +1121,15 @@ article header .postdate {
 }
 article .content h1 {
   margin: 3px 0px 3px -15px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 article .content h2 {
   margin: 3px 3px 3px 3px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 article .content h2:before {
   position: absolute;
-  top: -4px;
+  top: 0px;
   left: -1rem;
   color: #cc2a41;
   content: "#";
@@ -1137,14 +1137,14 @@ article .content h2:before {
   font-size: 1.2rem;
 }
 article .content h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 article .content h3:before {
   position: relative;
   top: -4px;
-  left: -1rem;
+  left: -0.3rem;
   color: #cc2a41;
-  content: "*";
+  content: "##";
   font-weight: bold;
   font-size: 1rem;
 }
