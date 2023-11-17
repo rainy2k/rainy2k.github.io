@@ -1,0 +1,41 @@
+<!-- FILEPATH: /Users/zhangxinyue/personal/myblog/rainy2k.github.io/themes/guaguastandup/layout/page.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><%= page.title %></title>
+  <meta name="description" content="<%= page.description %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="<%= url_for(theme.style) %>">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <% if (page.path === '/') { %>
+          <li class="active"><a href="/">Home</a></li>
+        <% } else { %>
+          <li><a href="/">Home</a></li>
+        <% } %>
+        <% page.menu.each(function(item){ %>
+          <% if (item.path === page.path) { %>
+            <li class="active"><a href="<%= url_for(item.path) %>"><%= item.name %></a></li>
+          <% } else { %>
+            <li><a href="<%= url_for(item.path) %>"><%= item.name %></a></li>
+          <% } %>
+        <% }); %>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <article>
+      <h1><%= page.title %></h1>
+      <%= page.content %>
+    </article>
+  </main>
+  <footer>
+    <p>&copy; <%= date.getFullYear() %> <%= config.title %></p>
+  </footer>
+</body>
+</html>

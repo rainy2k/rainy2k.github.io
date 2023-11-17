@@ -157,6 +157,7 @@ math:
   engine: mathjax
 mathjax:
   enabled: true
+  cdn: https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML
   
 # Fill in your Disqus Comments Shortname to enable Disqus comments.
 disqus:
@@ -207,7 +208,7 @@ cdn:
   font_awesome: https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css
   justified_gallery_css: https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.8.1/css/justifiedGallery.min.css
   justified_gallery_js: https://cdnjs.cloudflare.com/ajax/libs/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js
-
+  mathjax: https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML
 
 # Post wordcount display settings
 # Dependencies: https://github.com/willin/hexo-wordcount

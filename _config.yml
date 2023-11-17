@@ -99,6 +99,7 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: cactus
 remote-theme: cactus
+# theme: guaguastandup
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
