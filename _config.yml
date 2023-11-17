@@ -110,7 +110,6 @@ deploy:
   message: ${{ github.event.head_commit.message }}
   user: rainy2k
 
-
 # git config --global user.name rainy2k
 # git config --global user.email xinyuezhang@mail.ustc.edu.cn
 # hexo g -d
