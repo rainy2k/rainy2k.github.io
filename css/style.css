@@ -325,7 +325,7 @@ body .h1 {
   letter-spacing: 0.01em;
   font-weight: 700;
   font-style: normal;
-  font-size: 1.5em;
+  font-size: 1.6em;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 }
@@ -339,15 +339,18 @@ body .h2 {
   text-transform: none;
   letter-spacing: normal;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 body h3 {
   color: rgba(86,124,119,0.8);
-  text-decoration: underline;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
-body h4,
+body h4 {
+  color: #666;
+  font-weight: bold;
+  font-size: 1rem;
+}
 body h5,
 body h6 {
   display: inline;
@@ -1183,9 +1186,11 @@ article .content blockquote {
   color: var(--blockquote-color);
   margin: 10px 10px 10px 20px;
   padding: 0 15px;
+  background-color: #f2f2f2;
 }
 article .content table {
   margin: 10px 10px 10px 10px;
+  background-color: #f2f2f2;
 }
 article .content table footer {
   margin: line-height 0;
