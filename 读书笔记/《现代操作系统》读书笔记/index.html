@@ -14,7 +14,7 @@
 <meta property="og:description" content="学习守则  阅读章节导读，尝试带着问题去学习 做lab  章节导读 《操作系统调试》章节导读 调试与测试是软件开发流程中极其重要的步骤，调试用于分析、定位并修 复软件实现中的错误，而测试则通常用于确定软件实现是否符合设计预期，或者评估软件实现的质量。作为计算机软件栈底层，操作系统的正确性关系到上层应用能否正常运行，同时操作系统的性能也会对应用的性能造成直接影响， 因此调试和测试在操作系统中扮演了重">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-03-21T07:57:38.000Z">
-<meta property="article:modified_time" content="2023-11-17T06:52:43.972Z">
+<meta property="article:modified_time" content="2023-11-17T07:07:26.318Z">
 <meta property="article:author" content="Rainy2k">
 <meta property="article:tag" content="OS">
 <meta property="article:tag" content="Reading Notes">
@@ -52,18 +52,20 @@
 	
 		<script type="text/x-mathjax-config">
 		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [['$','$']]
+        },
 		  });
 		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+		<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 	
 <meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Rainy2k" type="application/atom+xml">
 </head>
 
-<body class="max-width mx-auto px3 ltr">    
+<body class="max-width mx-auto px3 ltr">
+    
       <div id="header-post">
   <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
@@ -445,20 +447,5 @@
 
 <!-- utterances Comments -->
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
