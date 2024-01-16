@@ -9,7 +9,7 @@ description: ''
 keywords:
 author: Rainy2k
 language: en
-timezone: ''
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -99,7 +99,6 @@ ignore:
 ## Themes: https://hexo.io/themes/
 theme: cactus
 remote-theme: cactus
-# theme: guaguastandup
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
