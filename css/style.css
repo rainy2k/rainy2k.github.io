@@ -326,8 +326,8 @@ body .h1 {
   font-weight: 700;
   font-style: normal;
   font-size: 1.5em;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 body h2,
 body .h2 {
@@ -400,7 +400,7 @@ body abbr {
 body ul,
 body ol,
 body dl {
-  line-height: 1.725;
+  line-height: 1.5;
 }
 body ul ul,
 body ol ul,
@@ -419,7 +419,7 @@ body table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 12px;
+  font-size: -1em;
   overflow: auto;
   display: block;
 }
@@ -428,7 +428,7 @@ body th {
   border-bottom: 1px dashed #666;
   color: #111;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 0em;
 }
 body td {
   padding: 0 8px;
@@ -436,8 +436,18 @@ body td {
 }
 @font-face {
   font-style: normal;
-  font-family: "Meslo LG";
-  src: local("Meslo LG S"), url("../lib/meslo-LG/MesloLGS-Regular.ttf") format("truetype");
+  font-family: "Merriweather";
+  src: local("Merriweather"), url("../lib/merriweather/Merriweather-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-style: normal;
+  font-family: "Raleway";
+  src: local("Raleway S"), url("../lib/raleway/raleway-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-style: normal;
+  font-family: "sans-serif";
+  src: local("Sans-Serif S"), url("../lib/sans-serif/SourceSans3-Regular.ttf") format("truetype");
 }
 *,
 *:before,
@@ -471,22 +481,22 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
-  border-top: 2px solid #363533;
+  border-top: 2px solid #000;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
 }
 body {
   margin: 0;
   height: 100%;
-  background-color: #e2e0de;
-  color: #363533;
+  background-color: #fff;
+  color: #000;
   font-weight: 400;
-  font-size: 14px;
-  font-family: "Menlo", "Meslo LG", monospace;
-  line-height: 1.725;
+  font-size: 1em;
+  font-family: Merriweather, "Raleway", sans-serif;
+  line-height: 1.5;
   text-rendering: geometricPrecision;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 .content {
   position: relative;
@@ -508,9 +518,9 @@ body {
   -webkit-hyphens: manual;
 }
 .content a {
-  color: #363533;
+  color: #000;
   text-decoration: none;
-  background-image: linear-gradient(transparent, transparent 5px, #363533 5px, #363533);
+  background-image: linear-gradient(transparent, transparent 5px, #000 5px, #000);
   background-position: bottom;
   background-size: 100% 6px;
   background-repeat: repeat-x;
@@ -572,7 +582,7 @@ body {
   }
 }
 .max-width {
-  max-width: 64rem;
+  max-width: 70rem;
 }
 @media (max-width: 480px) {
   .px3 {
@@ -597,14 +607,14 @@ body {
 #header .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
-  color: #363533;
+  color: #000;
   letter-spacing: 0.01em;
   font-weight: 700;
   font-style: normal;
   font-size: 1.5rem;
   line-height: 2rem;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: subpixel-antialiased;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 #header a {
   background: none;
@@ -839,7 +849,7 @@ body {
   display: none;
 }
 #header-post #toc .toc-level-2 {
-  color: #363533;
+  color: #000;
   font-size: 0.8rem;
 }
 #header-post #toc .toc-level-2:before {
@@ -920,7 +930,7 @@ body {
   z-index: 5000000;
   width: 100%;
   border-top: 1px solid #666;
-  background: #dedcd9;
+  background: #fafafa;
   transition: opacity 0.2s;
 }
 #footer-post a {
@@ -937,7 +947,7 @@ body {
 #footer-post #nav-footer {
   padding-right: 1rem;
   padding-left: 1rem;
-  background: #cdcac6;
+  background: #e6e6e6;
   text-align: center;
 }
 #footer-post #nav-footer a {
@@ -981,7 +991,7 @@ body {
 #footer-post #share-footer {
   padding-right: 1rem;
   padding-left: 1rem;
-  background: #cdcac6;
+  background: #e6e6e6;
   text-align: center;
 }
 #footer-post #share-footer ul {
@@ -1001,7 +1011,7 @@ body {
   clear: both;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  background: #cdcac6;
+  background: #e6e6e6;
   text-align: left;
 }
 #footer-post #toc-footer ol {
@@ -1019,7 +1029,7 @@ body {
   display: none;
 }
 #footer-post #toc-footer .toc-level-2 {
-  color: #363533;
+  color: #000;
   font-size: 0.8rem;
 }
 #footer-post #toc-footer .toc-level-2:before {
@@ -1082,6 +1092,12 @@ body {
 .project-list .project-item p {
   display: inline;
 }
+article p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0em;
+  font-size: 120%;
+}
 article header .posttitle {
   margin-top: 0;
   margin-bottom: 0;
@@ -1091,7 +1107,7 @@ article header .posttitle {
 }
 article header .meta {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 0rem;
 }
 article header .meta * {
   color: #666;
@@ -1118,7 +1134,7 @@ article .content img,
 article .content video {
   display: block;
   margin: auto;
-  max-width: 100%;
+  max-width: 60%;
   height: auto;
 }
 article .content .video-container {
@@ -1324,14 +1340,14 @@ article .content .caption {
   text-align: center;
 }
 .pagination .page-number {
-  color: #363533;
+  color: #000;
   font-size: 0.8rem;
 }
 .pagination a {
   padding: 4px 6px;
   border-radius: 5px;
   background-image: none;
-  color: #363533;
+  color: #000;
   text-decoration: none;
 }
 .pagination a:hover {
@@ -1346,8 +1362,8 @@ article .content .caption {
   outline: none;
   border: solid 1px #666;
   border-radius: 5px;
-  background-color: #e2e0de;
-  color: #363533;
+  background-color: #fff;
+  color: #000;
   font-size: 1.2rem;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -1364,7 +1380,7 @@ article .content .caption {
 }
 #search-result a.search-result-title {
   background-image: none;
-  color: #363533;
+  color: #000;
   text-transform: capitalize;
   font-weight: bold;
   line-height: 1.2;
@@ -1384,7 +1400,7 @@ article .content .caption {
 .search-no-result {
   display: none;
   padding-bottom: 0.5em;
-  color: #363533;
+  color: #000;
 }
 #tag-cloud .tag-cloud-title {
   color: #666;
@@ -1406,18 +1422,18 @@ article .content .caption {
   display: none;
   padding: 0.2em 0.5em;
   -webkit-font-smoothing: subpixel-antialiased;
-  color: #e2e0de;
+  color: #fff;
   font-display: swap;
   font-weight: 400;
-  font-size: 11.200000000000001px;
-  font-family: "Menlo", "Meslo LG", monospace;
-  line-height: 1.725;
+  font-size: 0.8em;
+  font-family: Merriweather, "Raleway", sans-serif;
+  line-height: 1.5;
   text-rendering: geometricPrecision;
   text-align: center;
   word-wrap: break-word;
   white-space: pre;
   content: attr(aria-label);
-  background: #363533;
+  background: #000;
   border-radius: 3px;
   opacity: 0;
 }
@@ -1427,7 +1443,7 @@ article .content .caption {
   display: none;
   width: 0;
   height: 0;
-  color: #363533;
+  color: #000;
   pointer-events: none;
   content: '';
   border: 6px solid transparent;
@@ -1458,7 +1474,7 @@ article .content .caption {
   right: 50%;
   bottom: -7px;
   margin-right: -6px;
-  border-bottom-color: #363533;
+  border-bottom-color: #000;
 }
 .tooltipped-sw::after {
   margin-right: -16px;
@@ -1591,7 +1607,7 @@ pre {
   border: 1px dotted #666;
   border-radius: 4px;
   font-size: 13px;
-  font-family: "Menlo", "Meslo LG", monospace;
+  font-family: monospace;
   line-height: 22px;
   -webkit-border-radius: 4px;
 }
@@ -1611,8 +1627,8 @@ code {
   margin: 1rem 0;
   padding: 10px 15px;
   border-radius: 4px;
-  background: #dedcd9;
-  font-family: "Menlo", "Meslo LG", monospace;
+  background: #fafafa;
+  font-family: monospace;
   -webkit-border-radius: 4px;
 }
 .highlight figcaption {
