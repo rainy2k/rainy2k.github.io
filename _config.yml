@@ -64,7 +64,7 @@ prismjs:
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
   path: ''
-  per_page: 15
+  per_page: 20
   order_by: -date
 
 # Category & Tag
@@ -99,7 +99,8 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: cactus
+# theme: cactus
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

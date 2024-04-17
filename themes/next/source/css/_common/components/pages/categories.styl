@@ -1,0 +1,38 @@
+.category-all-page {
+  .category-all-title {
+    text-align: center;
+  }
+
+  .category-all {
+    margin-top: 20px;
+  }
+
+  .category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .category-list-item {
+    margin: 0px 25px;
+  }
+
+  .category-list-count {
+    // color: $grey;
+    color: rgb(212, 66, 90);
+
+    &::before {
+      content: ' (';
+      display: inline;
+    }
+
+    &::after {
+      content: ') ';
+      display: inline;
+    }
+  }
+
+  .category-list-child {
+    padding-left: 10px;
+  }
+}
