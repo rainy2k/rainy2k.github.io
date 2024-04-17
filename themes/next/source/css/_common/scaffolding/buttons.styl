@@ -1,6 +1,6 @@
 .btn {
   background: var(--btn-default-bg);
-  border: 2px solid var(--btn-default-border-color);
+  border: 0px solid var(--btn-default-border-color);
   border-radius: $btn-default-radius;
   color: var(--btn-default-color);
   display: inline-block;
@@ -10,11 +10,14 @@
   text-decoration: none;
   transition-property: background-color;
   the-transition();
-
+  color: $pink;
   &:hover {
-    background: var(--btn-default-hover-bg);
-    border-color: var(--btn-default-hover-border-color);
-    color: var(--btn-default-hover-color);
+    // background: var(--btn-default-hover-bg);
+    // border-color: var(--btn-default-hover-border-color);
+    // color: var(--btn-default-hover-color);
+    background: var(--link-color);
+    border-color: var(--link-color);
+    color: #fff;
   }
 
   + .btn {
