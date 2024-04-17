@@ -1,4 +1,0 @@
----
-title: schedule
-type: schedule
----

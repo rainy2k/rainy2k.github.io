@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap/css?family=Merriweather:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"rainy2k.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="扩展GCD 给定a,b 求ax&#x3D;1(mod b)ax&#x3D;1(mod \ b)ax&#x3D;1(mod b) 的最小整数解 1234567891011121314151617181920212223#include&lt;bits&#x2F;stdc++.h&gt;using namespace std;#define ll long longll x, y;ll exgcd(ll a, ll b, ll &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展GCD">
+<meta property="og:url" content="https://rainy2k.github.io/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E6%89%A9%E5%B1%95GCD/index.html">
+<meta property="og:site_name" content="Rainy2k">
+<meta property="og:description" content="扩展GCD 给定a,b 求ax&#x3D;1(mod b)ax&#x3D;1(mod \ b)ax&#x3D;1(mod b) 的最小整数解 1234567891011121314151617181920212223#include&lt;bits&#x2F;stdc++.h&gt;using namespace std;#define ll long longll x, y;ll exgcd(ll a, ll b, ll &amp;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-09-15T03:57:00.000Z">
+<meta property="article:modified_time" content="2024-04-16T09:23:43.267Z">
+<meta property="article:author" content="Rainy2k">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://rainy2k.github.io/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E6%89%A9%E5%B1%95GCD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>扩展GCD | Rainy2k</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Rainy2k</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-preview">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Preview</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>Schedule</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://rainy2k.github.io/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E6%89%A9%E5%B1%95GCD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/my.GIF">
+      <meta itemprop="name" content="Rainy2k">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Rainy2k">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          扩展GCD
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-09-15 11:57:00" itemprop="dateCreated datePublished" datetime="2022-09-15T11:57:00+08:00">2022-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-04-16 17:23:43" itemprop="dateModified" datetime="2024-04-16T17:23:43+08:00">2024-04-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="扩展gcd"><a class="markdownIt-Anchor" href="#扩展gcd"></a> 扩展GCD</h1>
+<p>给定a,b</p>
+<p>求<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>x</mi><mo>=</mo><mn>1</mn><mo stretchy="false">(</mo><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>b</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">ax=1(mod \ b)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">a</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mspace"> </span><span class="mord mathnormal">b</span><span class="mclose">)</span></span></span></span> 的最小整数解</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line">ll x, y;</span><br><span class="line"><span class="function">ll <span class="title">exgcd</span><span class="params">(ll a, ll b, ll &amp;x, ll &amp;y)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!b)&#123;</span><br><span class="line">        x = <span class="number">1</span>, y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line">    ll d = <span class="built_in">exgcd</span>(b, a % b, x, y);</span><br><span class="line">    ll t = x;</span><br><span class="line">    x = y, y = t - y * (a / b);</span><br><span class="line">    <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ll a,b;</span><br><span class="line">    cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line">    <span class="built_in">exgcd</span>(a, b, x, y);</span><br><span class="line">    ll ans = (x + b) % b;<span class="comment">//最小整数解</span></span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">liEu</span><span class="params">(ll a, ll b, ll c, ll &amp;x, ll &amp;y)</span> </span>&#123;</span><br><span class="line">  ll d = <span class="built_in">exgcd</span>(a, b, x, y);</span><br><span class="line">  <span class="keyword">if</span> (c % d != <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  ll k = c / d;</span><br><span class="line">  x *= k;</span><br><span class="line">  y *= k;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h2 id="例题"><a class="markdownIt-Anchor" href="#例题"></a> 例题</h2>
+<h3 id="axbycz-k"><a class="markdownIt-Anchor" href="#axbycz-k"></a> ax+by+cz == k</h3>
+<p><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/4853/D">https://ac.nowcoder.com/acm/contest/4853/D</a></p>
+<p>题意</p>
+<blockquote>
+<p>求x,y,z,使得ax+by+cz ==k</p>
+<p>保证给出的a,b,c,k有解</p>
+</blockquote>
+<p>思路</p>
+<blockquote>
+<p>因为ax+by == gcd(a,b)有解</p>
+<p>只要让gcd(a,b)==1,那么肯定能得到akx+bky == k</p>
+<p>本来只想用a,b来找答案的,但是发现不行,枚举了一下ab,bc,ac就过了</p>
+</blockquote>
+<p>代码 :  <a target="_blank" rel="noopener" href="https://xlorpaste.cn/vp0m4u">https://xlorpaste.cn/vp0m4u</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E6%A6%82%E7%8E%87/" rel="prev" title="概率">
+      <i class="fa fa-chevron-left"></i> 概率
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E5%BF%AB%E9%80%9F%E5%B9%82/" rel="next" title="快速幂">
+      快速幂 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E5%B1%95gcd"><span class="nav-number">1.</span> <span class="nav-text"> 扩展GCD</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text"> 例题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#axbycz-k"><span class="nav-number">1.1.1.</span> <span class="nav-text"> ax+by+cz &#x3D;&#x3D; k</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Rainy2k"
+      src="/images/my.GIF">
+  <p class="site-author-name" itemprop="name">Rainy2k</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Rainy2k</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://rainy2k.github.io/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/%E6%95%B0%E5%AD%A6/%E6%89%A9%E5%B1%95GCD/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

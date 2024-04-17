@@ -1,4 +1,0 @@
----
-title: search
-type: search
----
